@@ -1,3 +1,11 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Spry.Identity.Data;
+using Spry.Identity.Models;
+using Spry.Identity.Workers;
+
+
 namespace Spry.Identity
 {
     public class Program
@@ -8,6 +16,66 @@ namespace Spry.Identity
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                            {
+                                options.LoginPath = "/account/login";
+                            });
+
+            builder.Services.AddDbContext<IdentityDataContext>(options => {
+                options.UseNpgsql(builder.Configuration.GetConnectionString("Spry_SSO_Identity"),
+                        npgsqlOptionsAction: sqlOptions => {
+                            //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
+                            sqlOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), []);
+                        });
+
+                options.UseOpenIddict<Guid>();
+            });
+
+            builder.Services.AddIdentity<User, UserRole>()
+                           .AddEntityFrameworkStores<IdentityDataContext>()
+                           .AddDefaultTokenProviders();
+
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.User.RequireUniqueEmail = true;
+            });
+
+
+            builder.Services.AddOpenIddict()
+                   .AddCore(options =>
+                   {
+                       options.UseEntityFrameworkCore().UseDbContext<IdentityDataContext>();
+                       //options.UseQuartz();                      
+                   })
+                   .AddServer(options =>
+                   {
+                       options.AllowClientCredentialsFlow()
+                              .AllowAuthorizationCodeFlow()
+                              .RequireProofKeyForCodeExchange()
+                              .AllowRefreshTokenFlow();
+
+                       options.SetAuthorizationEndpointUris("/connect/authorize")
+                               .SetTokenEndpointUris("/connect/token")
+                               .SetUserinfoEndpointUris("/connect/userinfo")
+                               .AddEphemeralEncryptionKey()
+                               .AddEphemeralSigningKey()
+                               .DisableAccessTokenEncryption()
+                               .RegisterScopes("api");
+
+                       options.UseAspNetCore()
+                               .EnableTokenEndpointPassthrough()
+                               .EnableAuthorizationEndpointPassthrough();
+                   });
+
+            builder.Services.AddHostedService<ClientStore>();
 
             var app = builder.Build();
 
