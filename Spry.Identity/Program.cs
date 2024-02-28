@@ -25,7 +25,8 @@ namespace Spry.Identity
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
                             {
-                                options.LoginPath = "/account/login";
+                                options.ExpireTimeSpan = TimeSpan.FromHours(1);
+                                options.SlidingExpiration = true;
                             });
 
             builder.Services.AddDbContext<IdentityDataContext>(options => {

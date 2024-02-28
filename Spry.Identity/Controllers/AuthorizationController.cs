@@ -57,16 +57,16 @@ namespace Spry.Identity.Controllers
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]
         [IgnoreAntiforgeryToken]
-        public async Task<IActionResult> Authorize()
+        public IActionResult Authorize()
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
             // Retrieve the user principal stored in the authentication cookie.
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var user = HttpContext.User;
 
             // If the user principal can't be extracted, redirect the user to the login page.
-            if (!result.Succeeded)
+            if (!user.Identity!.IsAuthenticated)
             {
                 return Challenge(
                     authenticationSchemes: CookieAuthenticationDefaults.AuthenticationScheme,
@@ -81,7 +81,7 @@ namespace Spry.Identity.Controllers
             var claims = new List<Claim>
                     {
                         // 'subject' claim which is required
-                        new Claim(OpenIddictConstants.Claims.Subject, result.Principal.Identity.Name),
+                        new(OpenIddictConstants.Claims.Subject, user.Identity!.Name!),
                         new Claim("some claim", "some value").SetDestinations(OpenIddictConstants.Destinations.AccessToken)
                     };
 
@@ -106,7 +106,6 @@ namespace Spry.Identity.Controllers
             {
                 Name = claimsPrincipal!.GetClaim(OpenIddictConstants.Claims.Subject),
                 Occupation = "Developer",
-                Age = 43
             });
         }
     }
