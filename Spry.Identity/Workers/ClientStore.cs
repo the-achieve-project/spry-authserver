@@ -1,6 +1,5 @@
 ﻿using OpenIddict.Abstractions;
 using static OpenIddict.Abstractions.OpenIddictConstants;
-using System;
 using Spry.Identity.Data;
 
 namespace Spry.Identity.Workers
@@ -48,7 +47,8 @@ namespace Spry.Identity.Workers
                     //ClientSecret = "postman-secret-spa",
                     ClientType = ClientTypes.Public,
                     RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
-                                    new Uri("https://jwt.ms")},
+                                    //new Uri("https://jwt.ms")
+                    },
                     Permissions =
                     {
                         Permissions.Endpoints.Authorization,

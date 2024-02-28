@@ -1,9 +1,13 @@
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Spry.Identity.Data;
+using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
+using Spry.Identity.Services;
 using Spry.Identity.Workers;
+using static OpenIddict.Server.OpenIddictServerEvents;
+using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
 
 namespace Spry.Identity
@@ -16,6 +20,7 @@ namespace Spry.Identity
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
@@ -48,15 +53,21 @@ namespace Spry.Identity
                 options.User.RequireUniqueEmail = true;
             });
 
-
             builder.Services.AddOpenIddict()
                    .AddCore(options =>
                    {
-                       options.UseEntityFrameworkCore().UseDbContext<IdentityDataContext>();
+                       options.UseEntityFrameworkCore()
+                               .UseDbContext<IdentityDataContext>()
+                               .ReplaceDefaultEntities<Guid>();
                        //options.UseQuartz();                      
                    })
                    .AddServer(options =>
                    {
+                       //options.EnableDegradedMode();
+                       options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
+
+                       options.ServerEventHandlers();
+
                        options.AllowClientCredentialsFlow()
                               .AllowAuthorizationCodeFlow()
                               .RequireProofKeyForCodeExchange()
@@ -75,6 +86,7 @@ namespace Spry.Identity
                                .EnableAuthorizationEndpointPassthrough();
                    });
 
+            builder.Services.AddScoped<AccountService>();
             builder.Services.AddHostedService<ClientStore>();
 
             var app = builder.Build();
@@ -92,8 +104,10 @@ namespace Spry.Identity
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
+            app.MapRazorPages();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");

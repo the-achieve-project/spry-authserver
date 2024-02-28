@@ -1,52 +1,42 @@
-﻿using Spry.Identity.ViewModels;
-using System.Security.Claims;
+﻿using Spry.Identity.Dtos.Account;
+using Spry.Identity.Services;
 
 namespace Spry.Identity.Controllers
 {
-    public class AccountController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AccountController : ControllerBase
     {
-        [HttpGet]
-        [AllowAnonymous]
-        public IActionResult Login(string? returnUrl)
+        readonly AccountService _accountService;
+        public AccountController(AccountService accountService)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            _accountService = accountService;
         }
 
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        [HttpPost("register")]
+        public async Task<IActionResult> Register(RegisterRequest request)
         {
-            ViewData["ReturnUrl"] = model.ReturnUrl;
+            var result = await _accountService.RegisterAsync(request);
 
-            if (ModelState.IsValid)
+            if (result.HasErrors)
             {
-                var claims = new List<Claim>
-                {
-                    new(ClaimTypes.Name, model.Username)
-                };
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                await HttpContext.SignInAsync(new ClaimsPrincipal(claimsIdentity));
-
-                if (Url.IsLocalUrl(model.ReturnUrl))
-                {
-                    return Redirect(model.ReturnUrl);
-                }
-
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return BadRequest(result.Errors);
             }
 
-            return View(model);
+            return Ok();
         }
 
-        public async Task<IActionResult> Logout()
+        [HttpPost("reset")]
+        public async Task<IActionResult> CreateUser(PasswordChange request)
         {
-            await HttpContext.SignOutAsync();
+            var result = await _accountService.ResetPasswordAsync(request);
 
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            if (result.HasErrors)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok();
         }
     }
 }

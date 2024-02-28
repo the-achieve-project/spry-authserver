@@ -11,7 +11,7 @@ namespace Spry.Identity.Controllers
         [HttpPost("~/connect/token")]
         public async Task<IActionResult> Exchange()
         {
-            var request = HttpContext.GetOpenIddictServerRequest() ??
+            OpenIddictRequest request = HttpContext.GetOpenIddictServerRequest() ??
                           throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
             ClaimsPrincipal claimsPrincipal;

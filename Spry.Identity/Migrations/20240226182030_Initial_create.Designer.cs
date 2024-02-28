@@ -12,7 +12,7 @@ using Spry.Identity.Data;
 namespace Spry.Identity.Migrations
 {
     [DbContext(typeof(IdentityDataContext))]
-    [Migration("20240226154255_Initial_create")]
+    [Migration("20240226182030_Initial_create")]
     partial class Initial_create
     {
         /// <inheritdoc />
