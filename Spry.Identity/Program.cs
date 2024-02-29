@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
 using Spry.Identity.Workers;
-using static OpenIddict.Server.OpenIddictServerEvents;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
 
@@ -22,12 +19,7 @@ namespace Spry.Identity
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
-                            {
-                                options.ExpireTimeSpan = TimeSpan.FromHours(1);
-                                options.SlidingExpiration = true;
-                            });
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
             builder.Services.AddDbContext<IdentityDataContext>(options => {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("Spry_SSO_Identity"),
@@ -42,6 +34,13 @@ namespace Spry.Identity
             builder.Services.AddIdentity<User, UserRole>()
                            .AddEntityFrameworkStores<IdentityDataContext>()
                            .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.ExpireTimeSpan = TimeSpan.FromDays(90); //subject to change
+                options.SlidingExpiration = true;
+            });
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -109,9 +108,7 @@ namespace Spry.Identity
             app.UseAuthorization();
 
             app.MapRazorPages();
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapDefaultControllerRoute();
 
             app.Run();
         }

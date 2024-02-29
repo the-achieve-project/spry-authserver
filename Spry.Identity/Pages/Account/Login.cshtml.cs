@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Spry.Identity.Models;
 using System.ComponentModel.DataAnnotations;
 
@@ -69,40 +66,41 @@ namespace Spry.Identity.Pages.Account
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
 
+
+                //var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
                 /*
-                var user = await _signInManager.UserManager.FindByEmailAsync(Input.Email);
+               if (user == null)
+               {
+                   ModelState.AddModelError(string.Empty, "email doesnt exist.");
+                   return Page();
+               }
 
-                if (user == null)
-                {
-                    ModelState.AddModelError(string.Empty, "email doesnt exist.");
-                    return Page();
-                }
+               var checkPasswordResult = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: false);
 
-                var checkPasswordResult = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: false);
+               if (checkPasswordResult.Succeeded)
+               {
+                   var userRoles = await _signInManager.UserManager.GetRolesAsync(user);
 
-                if (checkPasswordResult.Succeeded)
-                {
-                    var userRoles = await _signInManager.UserManager.GetRolesAsync(user);
+                   List<Claim> claims = new();
+                   foreach (var role in userRoles)
+                   {
+                       claims.Add(new Claim(ClaimTypes.Role, role));
+                   }
 
-                    List<Claim> claims = new();
-                    foreach (var role in userRoles)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, role));
-                    }
+                   await _signInManager.SignInWithClaimsAsync(user, new AuthenticationProperties { IsPersistent = Input.RememberMe }, claims);
 
-                    await _signInManager.SignInWithClaimsAsync(user, new AuthenticationProperties { IsPersistent = Input.RememberMe }, claims);
-
-                    _logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "invalid password.");
-                    return Page();
-                }
-                */
+                   _logger.LogInformation("User logged in.");
+                   return LocalRedirect(returnUrl);
+               }
+               else
+               {
+                   ModelState.AddModelError(string.Empty, "invalid password.");
+                   return Page();
+               }
+               */
 
                 var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
