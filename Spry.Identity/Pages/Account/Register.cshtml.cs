@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Spry.Identity.Pages.Account
 {
+#nullable disable
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<User> _signInManager;

@@ -63,7 +63,7 @@ namespace Spry.Identity.Workers
                         Permissions.ResponseTypes.Code,
 
                         //Permissions.Scopes.Email,
-                        //Permissions.Scopes.Profile,
+                        Permissions.Scopes.Profile,
                         //Permissions.Scopes.Roles,
 
                         Permissions.Prefixes.Scope + "api",

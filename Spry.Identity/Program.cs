@@ -19,7 +19,10 @@ namespace Spry.Identity
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
 
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+            //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
             builder.Services.AddDbContext<IdentityDataContext>(options => {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("Spry_SSO_Identity"),
@@ -76,10 +79,12 @@ namespace Spry.Identity
                        options.SetAuthorizationEndpointUris("/connect/authorize")
                                .SetTokenEndpointUris("/connect/token")
                                .SetUserinfoEndpointUris("/connect/userinfo")
-                               .AddEphemeralEncryptionKey()
-                               .AddEphemeralSigningKey()
+                               //.AddEphemeralEncryptionKey()
+                               //.AddEphemeralSigningKey()
+                               .AddDevelopmentEncryptionCertificate()
+                               .AddDevelopmentSigningCertificate()
                                .DisableAccessTokenEncryption()
-                               .RegisterScopes("api");
+                               .RegisterScopes("api", "profile");
 
                        options.UseAspNetCore()
                                .EnableTokenEndpointPassthrough()
