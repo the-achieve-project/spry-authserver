@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using Spry.Identity.SeedWork;
 using System.Security.Claims;
 
 namespace Spry.Identity.Controllers
@@ -8,6 +10,12 @@ namespace Spry.Identity.Controllers
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AuthorizationController : Controller
     {
+        private readonly IdentityServerSettings _idServerOptions;
+        public AuthorizationController(IOptions<IdentityServerSettings> options)
+        {
+            _idServerOptions = options.Value;
+        }
+
         [HttpPost("~/connect/token")]
         public async Task<IActionResult> Exchange()
         {
@@ -49,6 +57,8 @@ namespace Spry.Identity.Controllers
             {
                 throw new InvalidOperationException("The specified grant type is not supported.");
             }
+
+            claimsPrincipal.SetAudiences(_idServerOptions.Audiences);
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);

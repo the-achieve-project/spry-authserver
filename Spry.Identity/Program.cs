@@ -1,9 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
+using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
 using Spry.Identity.Workers;
+using System.Configuration;
+using System.Text.Json;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
 
@@ -18,6 +22,8 @@ namespace Spry.Identity
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+            var serverSettings = builder.Configuration.GetSection(IdentityServerSettings.Settings).Get<IdentityServerSettings>() !;
+            builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
 
             //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -57,16 +63,20 @@ namespace Spry.Identity
             });
 
             builder.Services.AddOpenIddict()
+                   .AddValidation(options => options.AddAudiences(serverSettings.Audiences))
                    .AddCore(options =>
                    {
                        options.UseEntityFrameworkCore()
                                .UseDbContext<IdentityDataContext>()
                                .ReplaceDefaultEntities<Guid>();
+
                        //options.UseQuartz();                      
                    })
                    .AddServer(options =>
                    {
                        //options.EnableDegradedMode();
+                       options.DisableTokenStorage(); //for dev
+                       
                        options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
 
                        options.ServerEventHandlers();
