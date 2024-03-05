@@ -58,7 +58,7 @@ namespace Spry.Identity.Controllers
                 throw new InvalidOperationException("The specified grant type is not supported.");
             }
 
-            claimsPrincipal.SetAudiences(_idServerOptions.Audiences);
+            claimsPrincipal.SetAudiences("resource_server_1");
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);

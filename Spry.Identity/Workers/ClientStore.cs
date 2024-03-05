@@ -20,36 +20,40 @@ namespace Spry.Identity.Workers
             var context = scope.ServiceProvider.GetRequiredService<IdentityDataContext>();
             await context.Database.EnsureCreatedAsync(cancellationToken);
 
-            var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+            await CreateApplicationsAsync();
+            await CreateScopesAsync();
 
-            if (await manager.FindByClientIdAsync("achieve_app", cancellationToken) is null)
+            async Task CreateApplicationsAsync()
             {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+
+                if (await manager.FindByClientIdAsync("achieve_app", cancellationToken) is null)
                 {
-                    ClientId = "achieve_app",
-                    ClientSecret = "achieve_app_secret",
-                    DisplayName = "achieve-app",
-                    Permissions =
+                    await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                    {
+                        ClientId = "achieve_app",
+                        ClientSecret = "achieve_app_secret",
+                        DisplayName = "achieve-app",
+                        Permissions =
                     {
                         Permissions.Endpoints.Token,
                         Permissions.GrantTypes.ClientCredentials,
 
                         Permissions.Prefixes.Scope + "api"
                     }
-                }, cancellationToken);
-            }
+                    }, cancellationToken);
+                }
 
-            if (await manager.FindByClientIdAsync("spry_admin", cancellationToken) is null)
-            {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                if (await manager.FindByClientIdAsync("spry_admin", cancellationToken) is null)
                 {
-                    ClientId = "spry_admin", 
-                    //ClientSecret = "postman-secret-spa",
-                    ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
+                    await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                    {
+                        ClientId = "spry_admin",
+                        ClientType = ClientTypes.Public,
+                        RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
                                     //new Uri("https://jwt.ms")
                     },
-                    Permissions =
+                        Permissions =
                     {
                         Permissions.Endpoints.Authorization,
                         Permissions.Endpoints.Token,
@@ -57,9 +61,6 @@ namespace Spry.Identity.Workers
                         Permissions.GrantTypes.AuthorizationCode,
                         Permissions.GrantTypes.ClientCredentials,
                         Permissions.GrantTypes.RefreshToken,
-
-                        //Permissions.GrantTypes.RefreshToken,
-
                         Permissions.ResponseTypes.Code,
 
                         //Permissions.Scopes.Email,
@@ -68,12 +69,57 @@ namespace Spry.Identity.Workers
 
                         Permissions.Prefixes.Scope + "api",
                     },
-                    Requirements =
+                        Requirements =
                     {
                         Requirements.Features.ProofKeyForCodeExchange,
                     },
-                }, cancellationToken);
+                    }, cancellationToken);
+                }
+
+                if (await manager.FindByClientIdAsync("resource_server_1", cancellationToken) is null)
+                {
+                    await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                    {
+                        ClientId = "resource_server_1",
+                        ClientSecret = "846B62D0-DEF9-4215-A99D-86E6B8DAB342",
+                        Permissions =
+                {
+                    Permissions.Endpoints.Introspection
+                }
+                    }, cancellationToken);
+                }
             }
+
+
+            async Task CreateScopesAsync()
+            {
+                var manager = scope.ServiceProvider.GetRequiredService<IOpenIddictScopeManager>();
+
+                if (await manager.FindByNameAsync("api1", cancellationToken) is null)
+                {
+                    await manager.CreateAsync(new OpenIddictScopeDescriptor
+                    {
+                        Name = "api1",
+                        Resources =
+                        {
+                            "resource_server_1"
+                        }
+                    }, cancellationToken);
+                }
+
+                if (await manager.FindByNameAsync("api2", cancellationToken) is null)
+                {
+                    await manager.CreateAsync(new OpenIddictScopeDescriptor
+                    {
+                        Name = "api2",
+                        Resources =
+                        {
+                            "resource_server_2"
+                        }
+                    }, cancellationToken);
+                }
+            }
+
         }
 
         public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;

@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualBasic;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
@@ -7,6 +8,7 @@ using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
 using Spry.Identity.Workers;
 using System.Configuration;
+using System.Security.Cryptography.X509Certificates;
 using System.Text.Json;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
@@ -22,7 +24,7 @@ namespace Spry.Identity
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-            var serverSettings = builder.Configuration.GetSection(IdentityServerSettings.Settings).Get<IdentityServerSettings>() !;
+            var serverSettings = builder.Configuration.GetSection(IdentityServerSettings.Settings).Get<IdentityServerSettings>()!;
             builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
 
             //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -30,9 +32,11 @@ namespace Spry.Identity
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            builder.Services.AddDbContext<IdentityDataContext>(options => {
+            builder.Services.AddDbContext<IdentityDataContext>(options =>
+            {
                 options.UseNpgsql(builder.Configuration.GetConnectionString("Spry_SSO_Identity"),
-                        npgsqlOptionsAction: sqlOptions => {
+                        npgsqlOptionsAction: sqlOptions =>
+                        {
                             //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
                             sqlOptions.EnableRetryOnFailure(10, TimeSpan.FromSeconds(30), []);
                         });
@@ -76,7 +80,7 @@ namespace Spry.Identity
                    {
                        //options.EnableDegradedMode();
                        options.DisableTokenStorage(); //for dev
-                       
+
                        options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
 
                        options.ServerEventHandlers();
@@ -89,12 +93,26 @@ namespace Spry.Identity
                        options.SetAuthorizationEndpointUris("/connect/authorize")
                                .SetTokenEndpointUris("/connect/token")
                                .SetUserinfoEndpointUris("/connect/userinfo")
-                               //.AddEphemeralEncryptionKey()
-                               //.AddEphemeralSigningKey()
-                               .AddDevelopmentEncryptionCertificate()
-                               .AddDevelopmentSigningCertificate()
-                               .DisableAccessTokenEncryption()
-                               .RegisterScopes("api", "profile");
+                               .SetIntrospectionEndpointUris("/connect/introspect");
+
+                       if (builder.Environment.IsDevelopment())
+                       {
+                           options.AddDevelopmentEncryptionCertificate()
+                                   .AddDevelopmentSigningCertificate();
+                       }
+                       else if (builder.Environment.IsProduction())
+                       {
+                           var cert = new X509Certificate2("everwage.key.prod.pfx", serverSettings.CertificatePasswordProd
+                                //it is important to use X509KeyStorageFlags.EphemeralKeySet to avoid 
+                                //Internal.Cryptography.CryptoThrowHelper+WindowsCryptographicException: The system cannot find the file specified.
+                                //keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet
+                                );
+                           options.AddSigningCertificate(cert)
+                                  .AddEncryptionCertificate(cert);
+                       }
+
+                       options.DisableAccessTokenEncryption()
+                              .RegisterScopes("api", "profile");
 
                        options.UseAspNetCore()
                                .EnableTokenEndpointPassthrough()
