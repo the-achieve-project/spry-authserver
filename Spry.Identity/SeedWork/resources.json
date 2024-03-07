@@ -1,0 +1,51 @@
+[
+  {
+    "Name": "api1",
+    "DisplayName": "resource server 1",
+    "Description": "resource server 1",
+    "Scopes": [ "spry.messaging" ],
+    "ClientSecret": "846B62D0-DEF9-4215-A99D-86E6B8DAB342"
+  },
+  {
+    "Name": "spry.messaging",
+    "DisplayName": "SPRY Messaging API",
+    "Description": "SPRY Messaging API",
+    "Scopes": [ "spry.messaging" ],
+    "ClientSecret": "90D7CDAC-172D-4B82-A148-DFA6F5563AC1"
+  },
+  {
+    "Name": "spry.id",
+    "DisplayName": "SPRY Identity API",
+    "Description": "This API enables access to the users and organizations identity information.",
+    "Scopes": [ "spry.id" ],
+    "ClientSecret": "1E84DEC3-5A55-42D2-976F-F8F8D4CF7183"
+  },
+  {
+    "Name": "spry.pim",
+    "DisplayName": "SPRY HR Employee API",
+    "Description": "This API enables access to Employee Information",
+    "Scopes": [ "spry.pim" ],
+    "ClientSecret": "62E77EA6-7644-4A53-892B-05FE8EA4CD44"
+  },
+  {
+    "Name": "spry.company",
+    "DisplayName": "SPRY Company Management API",
+    "Description": "This API enables access to Company Information",
+    "Scopes": [ "spry.company" ],
+    "ClientSecret": "CB651726-43DF-42C7-B022-F8FC690401E5"
+  },
+  {
+    "Name": "spry.payroll",
+    "DisplayName": "SPRY Payroll API",
+    "Description": "This API enables access to Payroll Information",
+    "Scopes": [ "spry.payroll" ],
+    "ClientSecret": "013E5FED-5C28-489C-A74F-FC2209FAEC95"
+  },
+  {
+    "Name": "spry.time",
+    "DisplayName": "SPRY Time Attendance API",
+    "Description": "This API enables access to Time Attendance Information",
+    "Scopes": [ "spry.time" ],
+    "ClientSecret": "2DDE086A-9AC0-4120-AAC5-76217267B81F"
+  }
+]

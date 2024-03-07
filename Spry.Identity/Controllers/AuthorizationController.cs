@@ -8,13 +8,9 @@ using System.Security.Claims;
 namespace Spry.Identity.Controllers
 {
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class AuthorizationController : Controller
+    public class AuthorizationController(IOptions<IdentityServerSettings> options) : Controller
     {
-        private readonly IdentityServerSettings _idServerOptions;
-        public AuthorizationController(IOptions<IdentityServerSettings> options)
-        {
-            _idServerOptions = options.Value;
-        }
+        private readonly IdentityServerSettings _idServerOptions = options.Value;
 
         [HttpPost("~/connect/token")]
         public async Task<IActionResult> Exchange()
@@ -40,7 +36,13 @@ namespace Spry.Identity.Controllers
 
                 claimsPrincipal = new ClaimsPrincipal(identity);
 
-                claimsPrincipal.SetScopes(request.GetScopes());
+                foreach (var item in request.GetScopes())
+                {
+                    identity.AddClaim(new Claim("scope", item)
+                            .SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                }           
+
+                //claimsPrincipal.SetScopes(request.GetScopes());
             }
             else if (request.IsAuthorizationCodeGrantType())
             {
@@ -58,7 +60,7 @@ namespace Spry.Identity.Controllers
                 throw new InvalidOperationException("The specified grant type is not supported.");
             }
 
-            claimsPrincipal.SetAudiences("resource_server_1");
+            claimsPrincipal.SetAudiences("spry.pim", "spry.time");
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -72,7 +74,6 @@ namespace Spry.Identity.Controllers
             var request = HttpContext.GetOpenIddictServerRequest() ??
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
 
-            // Retrieve the user principal stored in the authentication cookie.
             var user = HttpContext.User;
 
             // If the user principal can't be extracted, redirect the user to the login page.

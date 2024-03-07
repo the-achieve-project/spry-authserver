@@ -1,15 +1,10 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualBasic;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
-using Spry.Identity.Workers;
-using System.Configuration;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.Json;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
 
@@ -120,7 +115,7 @@ namespace Spry.Identity
                    });
 
             builder.Services.AddScoped<AccountService>();
-            builder.Services.AddHostedService<ClientStore>();
+            builder.Services.AddHostedService<Workers.Seeder>();
 
             var app = builder.Build();
 
