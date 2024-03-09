@@ -74,9 +74,11 @@ namespace Spry.Identity
                    .AddServer(options =>
                    {
                        //options.EnableDegradedMode();
-                       options.DisableTokenStorage(); //for dev
+                       //options.DisableTokenStorage(); //for dev
 
                        options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
+
+                       //options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
 
                        options.ServerEventHandlers();
 
@@ -106,8 +108,8 @@ namespace Spry.Identity
                                   .AddEncryptionCertificate(cert);
                        }
 
-                       options.DisableAccessTokenEncryption()
-                              .RegisterScopes("api", "profile");
+                       options.DisableAccessTokenEncryption();
+                              //.RegisterScopes("api", "profile");
 
                        options.UseAspNetCore()
                                .EnableTokenEndpointPassthrough()

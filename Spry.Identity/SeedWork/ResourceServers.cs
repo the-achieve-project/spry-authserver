@@ -31,6 +31,33 @@ namespace Spry.Identity.SeedWork
                     }, cancellationToken);
                 }
             }
+
+
+            if (await manager.FindByClientIdAsync("resource_server_1") is null)
+            {
+                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "resource_server_1",
+                    ClientSecret = "846B62D0-DEF9-4215-A99D-86E6B8DAB342",
+                    Permissions =
+                {
+                    Permissions.Endpoints.Introspection
+                }
+                });
+            }
+            
+            if (await manager.FindByClientIdAsync("resource_server_2") is null)
+            {
+                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "resource_server_2",
+                    ClientSecret = "996B62D0-DEF9-4215-A99D-86E6B8DAB342",
+                    Permissions =
+                {
+                    Permissions.Endpoints.Introspection
+                }
+                });
+            }
         }
     }
 

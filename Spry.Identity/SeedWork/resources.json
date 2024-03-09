@@ -1,12 +1,5 @@
 [
   {
-    "Name": "api1",
-    "DisplayName": "resource server 1",
-    "Description": "resource server 1",
-    "Scopes": [ "spry.messaging" ],
-    "ClientSecret": "846B62D0-DEF9-4215-A99D-86E6B8DAB342"
-  },
-  {
     "Name": "spry.messaging",
     "DisplayName": "SPRY Messaging API",
     "Description": "SPRY Messaging API",

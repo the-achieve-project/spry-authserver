@@ -44,7 +44,6 @@ namespace Spry.Identity.SeedWork
                         Permissions.Endpoints.Token,
 
                         Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.ClientCredentials,
                         Permissions.GrantTypes.RefreshToken,
                         Permissions.ResponseTypes.Code,
 
@@ -73,7 +72,6 @@ namespace Spry.Identity.SeedWork
                         Permissions.Endpoints.Token,
 
                         Permissions.GrantTypes.AuthorizationCode,
-                        Permissions.GrantTypes.ClientCredentials,
                         Permissions.GrantTypes.RefreshToken,
                         Permissions.ResponseTypes.Code,
 

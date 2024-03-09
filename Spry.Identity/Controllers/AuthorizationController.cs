@@ -36,13 +36,13 @@ namespace Spry.Identity.Controllers
 
                 claimsPrincipal = new ClaimsPrincipal(identity);
 
-                foreach (var item in request.GetScopes())
-                {
-                    identity.AddClaim(new Claim("scope", item)
-                            .SetDestinations(OpenIddictConstants.Destinations.AccessToken));
-                }           
+                //foreach (var item in request.GetScopes())
+                //{
+                //    identity.AddClaim(new Claim("scope", item)
+                //            .SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                //}
 
-                //claimsPrincipal.SetScopes(request.GetScopes());
+                claimsPrincipal.SetScopes(request.GetScopes());
             }
             else if (request.IsAuthorizationCodeGrantType())
             {
@@ -60,7 +60,10 @@ namespace Spry.Identity.Controllers
                 throw new InvalidOperationException("The specified grant type is not supported.");
             }
 
-            claimsPrincipal.SetAudiences("spry.pim", "spry.time");
+            if (_idServerOptions.PayrollClients.Contains(request.ClientId) )
+            {
+                claimsPrincipal.SetAudiences(_idServerOptions.Audiences);
+            }
 
             // Returning a SignInResult will ask OpenIddict to issue the appropriate access/identity tokens.
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -101,7 +104,7 @@ namespace Spry.Identity.Controllers
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
             // Set requested scopes (this is not done automatically)
-            claimsPrincipal.SetScopes(request.GetScopes());
+            claimsPrincipal.SetScopes(request.GetScopes());     
 
             // Signing in with the OpenIddict authentiction scheme trigger OpenIddict to issue a code (which can be exchanged for an access token)
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
