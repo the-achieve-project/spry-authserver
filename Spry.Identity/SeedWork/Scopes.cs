@@ -10,7 +10,7 @@ namespace Spry.Identity.SeedWork
         {
             var manager = serviceProvider.GetRequiredService<IOpenIddictScopeManager>();
 
-            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "SeedWork/resources.json"));
+            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "SeedWork/scopes.json"));
 
             var scopes = JsonSerializer.Deserialize<ApiResource[]>(config);
 

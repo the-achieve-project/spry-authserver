@@ -29,7 +29,8 @@ namespace Spry.Identity
 
             builder.Services.AddDbContext<IdentityDataContext>(options =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("Spry_SSO_Identity"),
+                Console.WriteLine("connection: {0}", builder.Configuration.GetConnectionString("SprySSOIdentity"));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("SprySSOIdentity"),
                         npgsqlOptionsAction: sqlOptions =>
                         {
                             //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
@@ -109,11 +110,15 @@ namespace Spry.Identity
                        }
 
                        options.DisableAccessTokenEncryption();
-                              //.RegisterScopes("api", "profile");
+                       //.RegisterScopes("api", "profile");
 
                        options.UseAspNetCore()
                                .EnableTokenEndpointPassthrough()
                                .EnableAuthorizationEndpointPassthrough();
+
+                       if (builder.Environment.IsDevelopment())
+                           options.UseAspNetCore()
+                                  .DisableTransportSecurityRequirement();
                    });
 
             builder.Services.AddScoped<AccountService>();
@@ -129,7 +134,7 @@ namespace Spry.Identity
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

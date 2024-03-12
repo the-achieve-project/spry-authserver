@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spry.Identity", "Spry.Identity\Spry.Identity.csproj", "{6CCBEE07-8678-4672-8AB0-82AAFB166865}"
 EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3220953D-5BB7-4C18-909F-7468E0B17CAC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{6CCBEE07-8678-4672-8AB0-82AAFB166865}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6CCBEE07-8678-4672-8AB0-82AAFB166865}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6CCBEE07-8678-4672-8AB0-82AAFB166865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3220953D-5BB7-4C18-909F-7468E0B17CAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3220953D-5BB7-4C18-909F-7468E0B17CAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3220953D-5BB7-4C18-909F-7468E0B17CAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3220953D-5BB7-4C18-909F-7468E0B17CAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

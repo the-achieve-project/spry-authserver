@@ -113,7 +113,6 @@ namespace Spry.Identity.SeedWork
 
                         Permissions.Scopes.Email,
                         Permissions.Scopes.Profile,
-                        Permissions.Scopes.Roles,
 
                         Permissions.Prefixes.Scope + "spry.pim",
                         Permissions.Prefixes.Scope + "spry.time",
