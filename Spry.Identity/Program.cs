@@ -4,7 +4,6 @@ using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
-using System;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
