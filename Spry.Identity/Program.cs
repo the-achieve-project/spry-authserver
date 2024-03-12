@@ -4,6 +4,7 @@ using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
+using System;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
@@ -125,6 +126,17 @@ namespace Spry.Identity
             builder.Services.AddHostedService<Workers.Seeder>();
 
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
+
+                logger!.LogInformation("Migrating IdentityDataContext start");
+                var db = scope.ServiceProvider.GetRequiredService<IdentityDataContext>();
+
+                db.Database.Migrate();
+                logger!.LogInformation("Migrating IdentityDataContext end");
+            }
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
