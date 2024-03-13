@@ -29,7 +29,6 @@ namespace Spry.Identity
 
             builder.Services.AddDbContext<IdentityDataContext>(options =>
             {
-                Console.WriteLine("connection: {0}", builder.Configuration.GetConnectionString("SprySSOIdentity"));
                 options.UseNpgsql(builder.Configuration.GetConnectionString("SprySSOIdentity"),
                         npgsqlOptionsAction: sqlOptions =>
                         {

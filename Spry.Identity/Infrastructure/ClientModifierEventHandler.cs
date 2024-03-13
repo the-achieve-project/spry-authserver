@@ -23,8 +23,6 @@ namespace Spry.Identity.Infrastructure
                     Console.WriteLine("ValidateAuthorizationRequestContext inline handler");
                     //context.Request!.RedirectUri = "https://jwt.ms";
 
-                    Console.WriteLine(JsonSerializer.Serialize(context.Request));
-
                     return default;
                 });
 
@@ -40,8 +38,6 @@ namespace Spry.Identity.Infrastructure
                     Console.WriteLine("ValidateTokenRequestContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
 
-                    Console.WriteLine(JsonSerializer.Serialize(context.Request));
-
                     return default;
                 });
 
@@ -55,8 +51,6 @@ namespace Spry.Identity.Infrastructure
 
                     Console.WriteLine("HandleAuthorizationRequestContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
-
-                    Console.WriteLine(JsonSerializer.Serialize(context.Request));
 
                     return default;
                 });
@@ -72,8 +66,6 @@ namespace Spry.Identity.Infrastructure
                     Console.WriteLine("ApplyAuthorizationResponseContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
 
-                    Console.WriteLine(JsonSerializer.Serialize(context.Request));
-
                     return default;
                 });
 
@@ -87,8 +79,6 @@ namespace Spry.Identity.Infrastructure
 
                     Console.WriteLine("ApplyTokenResponseContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
-
-                    Console.WriteLine(JsonSerializer.Serialize(context.Request));
 
                     return default;
                 });
