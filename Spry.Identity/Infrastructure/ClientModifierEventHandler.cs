@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using OpenIddict.Abstractions;
+﻿using OpenIddict.Abstractions;
 using OpenIddict.Server;
-using System.Collections.Immutable;
-using System.Text.Json;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 using static OpenIddict.Server.OpenIddictServerEvents;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
