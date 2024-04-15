@@ -17,7 +17,7 @@ namespace Spry.Identity.Infrastructure
                 {
                     ArgumentNullException.ThrowIfNull(context);
 
-                    Console.WriteLine("ValidateAuthorizationRequestContext inline handler");
+                    //Console.WriteLine("ValidateAuthorizationRequestContext inline handler");
                     //context.Request!.RedirectUri = "https://jwt.ms";
 
                     return default;
@@ -32,7 +32,7 @@ namespace Spry.Identity.Infrastructure
                 {
                     ArgumentNullException.ThrowIfNull(context);
 
-                    Console.WriteLine("ValidateTokenRequestContext inline handler");
+                    //Console.WriteLine("ValidateTokenRequestContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
 
                     return default;
@@ -46,7 +46,7 @@ namespace Spry.Identity.Infrastructure
                 {
                     ArgumentNullException.ThrowIfNull(context);
 
-                    Console.WriteLine("HandleAuthorizationRequestContext inline handler");
+                    //Console.WriteLine("HandleAuthorizationRequestContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
 
                     return default;
@@ -60,7 +60,7 @@ namespace Spry.Identity.Infrastructure
                 {
                     ArgumentNullException.ThrowIfNull(context);
 
-                    Console.WriteLine("ApplyAuthorizationResponseContext inline handler");
+                    //Console.WriteLine("ApplyAuthorizationResponseContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
 
                     return default;
@@ -74,7 +74,7 @@ namespace Spry.Identity.Infrastructure
                 {
                     ArgumentNullException.ThrowIfNull(context);
 
-                    Console.WriteLine("ApplyTokenResponseContext inline handler");
+                    //Console.WriteLine("ApplyTokenResponseContext inline handler");
                     //context.Request!.RedirectUri = "https://oauth.pstmn.io/v1/callback2";
 
                     return default;

@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
+using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using System.Security.Claims;
 
 namespace Spry.Identity.Controllers
 {
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class AuthorizationController(IOptions<IdentityServerSettings> options) : Controller
+    public class AuthorizationController(IOptions<IdentityServerSettings> options, SignInManager<User> signInManager) : Controller
     {
         private readonly IdentityServerSettings _idServerOptions = options.Value;
 
@@ -31,15 +33,13 @@ namespace Spry.Identity.Controllers
                 identity.AddClaim(OpenIddictConstants.Claims.Subject, request.ClientId ?? throw new InvalidOperationException());
 
                 // Add some claim, don't forget to add destination otherwise it won't be added to the access token.
-                identity.AddClaim(new Claim("some-claim", "some-value")
-                          .SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                //identity.AddClaim(new Claim("some-claim", "some-value").SetDestinations(OpenIddictConstants.Destinations.AccessToken));
 
                 claimsPrincipal = new ClaimsPrincipal(identity);
 
                 //foreach (var item in request.GetScopes())
                 //{
-                //    identity.AddClaim(new Claim("scope", item)
-                //            .SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                //    identity.AddClaim(new Claim("scope", item).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
                 //}
 
                 claimsPrincipal.SetScopes(request.GetScopes());
@@ -60,7 +60,12 @@ namespace Spry.Identity.Controllers
                 throw new InvalidOperationException("The specified grant type is not supported.");
             }
 
-            if (_idServerOptions.PayrollClients.Contains(request.ClientId) )
+            if (request.ClientId == ClientIds.AchieveApp)
+            {
+                claimsPrincipal.SetAudiences(_idServerOptions.AchieveAudiences);
+            }
+
+            if (_idServerOptions.PayrollClients.Contains(request.ClientId))
             {
                 claimsPrincipal.SetAudiences(_idServerOptions.Audiences);
             }
@@ -95,7 +100,7 @@ namespace Spry.Identity.Controllers
             var claims = new List<Claim>
                     {
                         // 'subject' claim which is required
-                        new(OpenIddictConstants.Claims.Subject, user.Identity!.Name!),
+                        new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
                         new Claim("some claim", "some value").SetDestinations(OpenIddictConstants.Destinations.AccessToken)
                     };
 
@@ -104,7 +109,7 @@ namespace Spry.Identity.Controllers
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
             // Set requested scopes (this is not done automatically)
-            claimsPrincipal.SetScopes(request.GetScopes());     
+            claimsPrincipal.SetScopes(request.GetScopes());
 
             // Signing in with the OpenIddict authentiction scheme trigger OpenIddict to issue a code (which can be exchanged for an access token)
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
@@ -116,11 +121,31 @@ namespace Spry.Identity.Controllers
         {
             var claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
 
-            return Ok(new
+            User user = (await signInManager.UserManager.FindByIdAsync(claimsPrincipal!.GetClaim("sub")!))!;
+
+            return Ok(new UserInfo
             {
-                Name = claimsPrincipal!.GetClaim(OpenIddictConstants.Claims.Subject),
-                Occupation = "Developer",
+                Sub = user.Id.ToString(),
+                UserName = user.UserName,
+                FirstName = user.FirstName,
+                OtherNames = user.OtherNames,
+                LastName = user.LastName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
             });
+        }
+
+        [HttpGet("~/connect/endsession")]
+        public async Task<IActionResult> Logout()
+        {
+            // Ask ASP.NET Core Identity to delete the local and external cookies created
+            // when the user agent is redirected from the external identity provider
+            // after a successful authentication flow (e.g Google or Facebook).
+            await signInManager.SignOutAsync();
+
+            // Returning a SignOutResult will ask OpenIddict to redirect the user agent
+            // to the post_logout_redirect_uri specified by the client application.
+            return SignOut(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
     }
 }

@@ -129,4 +129,12 @@ namespace Spry.Identity.SeedWork
             }
         }
     }
+
+    public static class ClientIds
+    {
+        public const string SpryEss = "spry.ess";
+        public const string SpryWeb = "spry.admin";
+        public const string AchieveApp = "achieve_app";
+        public const string M2M = "m2m";
+    }
 }

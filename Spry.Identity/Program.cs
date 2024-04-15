@@ -6,6 +6,7 @@ using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
 using System.Security.Cryptography.X509Certificates;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
+using static OpenIddict.Server.OpenIddictServerHandlers.Session;
 
 
 namespace Spry.Identity
@@ -62,7 +63,11 @@ namespace Spry.Identity
             });
 
             builder.Services.AddOpenIddict()
-                   .AddValidation(options => options.AddAudiences(serverSettings.Audiences))
+                   .AddValidation(options =>
+                   {
+                       options.AddAudiences(serverSettings.Audiences);
+                       //options.EnableTokenEntryValidation();
+                   })
                    .AddCore(options =>
                    {
                        options.UseEntityFrameworkCore()
@@ -77,6 +82,7 @@ namespace Spry.Identity
                        //options.DisableTokenStorage(); //for dev
 
                        options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
+                       options.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
 
                        //options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
 
@@ -90,7 +96,8 @@ namespace Spry.Identity
                        options.SetAuthorizationEndpointUris("/connect/authorize")
                                .SetTokenEndpointUris("/connect/token")
                                .SetUserinfoEndpointUris("/connect/userinfo")
-                               .SetIntrospectionEndpointUris("/connect/introspect");
+                               .SetIntrospectionEndpointUris("/connect/introspect")
+                               .SetLogoutEndpointUris("/connect/endsession");
 
                        if (builder.Environment.IsDevelopment())
                        {
@@ -113,7 +120,9 @@ namespace Spry.Identity
 
                        options.UseAspNetCore()
                                .EnableTokenEndpointPassthrough()
-                               .EnableAuthorizationEndpointPassthrough();
+                               .EnableAuthorizationEndpointPassthrough()
+                               .EnableLogoutEndpointPassthrough()
+                               .EnableUserinfoEndpointPassthrough();
 
                        if (builder.Environment.IsDevelopment())
                            options.UseAspNetCore()

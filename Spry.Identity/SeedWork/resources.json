@@ -40,5 +40,12 @@
     "Description": "This API enables access to Time Attendance Information",
     "Scopes": [ "spry.time" ],
     "ClientSecret": "2DDE086A-9AC0-4120-AAC5-76217267B81F"
+  },
+  {
+    "Name": "achieve_money_api",
+    "DisplayName": "Achieve Money API",
+    "Description": "",
+    "Scopes": [ "achieve_money_api" ],
+    "ClientSecret": "4FDE086A-9AC0-4120-GGC5-76217267B81F"
   }
 ]

@@ -26,6 +26,9 @@
     <PackageReference Include="OpenIddict.Quartz" Version="5.2.0" />
     <PackageReference Include="OpenIddict.Server.AspNetCore" Version="5.2.0" />
     <PackageReference Include="Quartz.Extensions.Hosting" Version="3.8.1" />
+    <PackageReference Include="Spry.EventBus" Version="1.0.8" />
+    <PackageReference Include="Spry.EventBus.RabbitMQ" Version="1.0.8" />
+    <PackageReference Include="Spry.IntegrationEventLog.EF" Version="1.0.8" />
   </ItemGroup>
 
 </Project>
