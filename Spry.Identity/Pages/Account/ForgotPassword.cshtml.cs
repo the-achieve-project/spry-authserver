@@ -55,6 +55,8 @@ namespace Spry.Identity.Pages.Account
                     }
                 };
 
+                messagingService.SendMail(mail);
+
                 if (!string.IsNullOrEmpty(user.PhoneNumber))
                 {
                     var message = $"Hello {user.FirstName}, \nClick the link to reset your password" +
@@ -63,7 +65,6 @@ namespace Spry.Identity.Pages.Account
                     messagingService.SendSms(new Sms_Task { Text = message, To = user.UserName });
                 }
 
-                messagingService.SendMail(mail);
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
