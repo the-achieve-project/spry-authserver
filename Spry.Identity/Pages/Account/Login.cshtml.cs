@@ -1,19 +1,12 @@
 using Spry.Identity.Models;
 using System.ComponentModel.DataAnnotations;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spry.Identity.Pages.Account
 {
-    public class LoginModel : PageModel
+#nullable disable
+    public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger) : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly ILogger<LoginModel> _logger;
-
-        public LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger)
-        {
-            _signInManager = signInManager;
-            _logger = logger;
-        }
-
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -36,7 +29,7 @@ namespace Spry.Identity.Pages.Account
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
         }
@@ -45,18 +38,18 @@ namespace Spry.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
 
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             if (ModelState.IsValid)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
 
-                var result = await _signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                SignInResult result = await signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    logger.LogInformation("User logged in.");
                     return LocalRedirect(returnUrl);
                 }
                 if (result.RequiresTwoFactor)
@@ -65,12 +58,21 @@ namespace Spry.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    var user = await signInManager.UserManager.FindByEmailAsync(Input.Email);
+
+                    if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
+                    {
+                        ModelState.AddModelError(string.Empty, "email not confirmed.");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                    }
                     return Page();
                 }
             }

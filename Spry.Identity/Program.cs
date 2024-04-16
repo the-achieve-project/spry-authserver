@@ -17,20 +17,17 @@ namespace Spry.Identity
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            builder.Host
-                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                .ConfigureContainer<ContainerBuilder>((container) =>
-                {
-                    container.RegisterType<AccountService>().InstancePerLifetimeScope();
-                    container.RegisterType<MessagingService>().InstancePerLifetimeScope();
-                });
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                        .ConfigureContainer<ContainerBuilder>((container) =>
+                        {
+                            container.RegisterType<AccountService>().InstancePerLifetimeScope();
+                            container.RegisterType<MessagingService>().InstancePerLifetimeScope();
+                        });
             
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
-
-            //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -60,7 +57,7 @@ namespace Spry.Identity
 
             builder.Services.Configure<IdentityOptions>(options =>
             {
-                options.SignIn.RequireConfirmedAccount = false;
+                options.SignIn.RequireConfirmedAccount = true;
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 4;
                 options.Password.RequireLowercase = false;

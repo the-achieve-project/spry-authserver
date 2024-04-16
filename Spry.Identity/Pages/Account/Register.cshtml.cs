@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.WebUtilities;
 using Spry.Identity.Models;
+using Spry.Identity.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -9,28 +10,31 @@ namespace Spry.Identity.Pages.Account
 #nullable disable
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<User> _signInManager;
-        private readonly UserManager<User> _userManager;
-        private readonly IUserStore<User> _userStore;
-        private readonly IUserEmailStore<User> _emailStore;
-        private readonly ILogger<RegisterModel> _logger;
-        //private readonly IEmailSender _emailSender;
-
+        #region fields
+        readonly SignInManager<User> _signInManager;
+        readonly UserManager<User> _userManager;
+        readonly IUserStore<User> _userStore;
+        readonly IUserEmailStore<User> _emailStore;
+        readonly ILogger<RegisterModel> _logger;
+        readonly MessagingService _messagingService;
+        readonly IConfiguration _configuration;
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
-            ILogger<RegisterModel> logger
-            //IEmailSender emailSender
-            )
+            ILogger<RegisterModel> logger,
+            MessagingService messagingService,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            //_emailSender = emailSender;
+            _messagingService = messagingService;
+            _configuration = configuration;
         }
+        #endregion
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -79,8 +83,6 @@ namespace Spry.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                //var user = CreateUser();
-
                 var user = new User
                 {
                     FirstName = Input.FirstName,
@@ -96,20 +98,34 @@ namespace Spry.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-
-                    var callbackUrl = Url.Page("/Account/ConfirmEmail",
-                        pageHandler: null, values: new { area = "Identity", userId, code, returnUrl },
-                        protocol: Request.Scheme);
-
-                    _logger.LogInformation(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
-
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+
+                        var callbackUrl = Url.Page("/Account/ConfirmEmail",
+                            pageHandler: null, values: new { userId, code, returnUrl },
+                            protocol: Request.Scheme);
+
+                        _logger.LogInformation( "Confirm account link: {0}", HtmlEncoder.Default.Encode(callbackUrl));
+
+                        var mail = new MailInfo
+                        {
+                            RxEmail = user.Email,
+                            RxName = user.FirstName,
+                            EmailTemplate = _configuration["EmailTemplates:ConfirmAccount"],
+                            EmailTemplateLocale = _configuration["EmailTemplates:ConfirmAccount"],
+                            Content = new
+                            {
+                                first_name = user.FirstName,
+                                reset_url = callbackUrl
+                            }
+                        };
+
+                        _messagingService.SendMail(mail);
+
+                        return RedirectToPage("./RegisterConfirmation");
                     }
                     else
                     {

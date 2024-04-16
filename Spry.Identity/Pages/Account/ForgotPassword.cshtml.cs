@@ -57,14 +57,14 @@ namespace Spry.Identity.Pages.Account
 
                 messagingService.SendMail(mail);
 
-                if (!string.IsNullOrEmpty(user.PhoneNumber))
+                //ToDo: url shortner for sms
+                if (false && !string.IsNullOrEmpty(user.PhoneNumber))
                 {
                     var message = $"Hello {user.FirstName}, \nClick the link to reset your password" +
                     $"\n\n{callbackUrl}";
 
-                    messagingService.SendSms(new Sms_Task { Text = message, To = user.UserName });
+                    messagingService.SendSms(new Sms_Task { Text = message, To = user.PhoneNumber });
                 }
-
 
                 return RedirectToPage("./ForgotPasswordConfirmation");
             }
