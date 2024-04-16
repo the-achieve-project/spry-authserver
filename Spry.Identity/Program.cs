@@ -4,9 +4,6 @@ using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
-using System.Security.Cryptography.X509Certificates;
-using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
-using static OpenIddict.Server.OpenIddictServerHandlers.Session;
 
 
 namespace Spry.Identity
@@ -15,12 +12,11 @@ namespace Spry.Identity
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-            var serverSettings = builder.Configuration.GetSection(IdentityServerSettings.Settings).Get<IdentityServerSettings>()!;
             builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
 
             //builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -62,72 +58,9 @@ namespace Spry.Identity
                 options.User.RequireUniqueEmail = true;
             });
 
-            builder.Services.AddOpenIddict()
-                   .AddValidation(options =>
-                   {
-                       options.AddAudiences(serverSettings.Audiences);
-                       //options.EnableTokenEntryValidation();
-                   })
-                   .AddCore(options =>
-                   {
-                       options.UseEntityFrameworkCore()
-                               .UseDbContext<IdentityDataContext>()
-                               .ReplaceDefaultEntities<Guid>();
+            builder.Services.AddOpenIddictConfiguration(builder);
 
-                       //options.UseQuartz();                      
-                   })
-                   .AddServer(options =>
-                   {
-                       //options.EnableDegradedMode();
-                       //options.DisableTokenStorage(); //for dev
-
-                       options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
-                       options.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
-
-                       //options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
-
-                       options.ServerEventHandlers();
-
-                       options.AllowClientCredentialsFlow()
-                              .AllowAuthorizationCodeFlow()
-                              .RequireProofKeyForCodeExchange()
-                              .AllowRefreshTokenFlow();
-
-                       options.SetAuthorizationEndpointUris("/connect/authorize")
-                               .SetTokenEndpointUris("/connect/token")
-                               .SetUserinfoEndpointUris("/connect/userinfo")
-                               .SetIntrospectionEndpointUris("/connect/introspect")
-                               .SetLogoutEndpointUris("/connect/endsession");
-
-                       if (builder.Environment.IsDevelopment())
-                       {
-                           options.AddDevelopmentEncryptionCertificate()
-                                   .AddDevelopmentSigningCertificate();
-                       }
-                       else if (builder.Environment.IsProduction())
-                       {
-                           var cert = new X509Certificate2("everwage.key.prod.pfx", serverSettings.CertificatePasswordProd
-                                //it is important to use X509KeyStorageFlags.EphemeralKeySet to avoid 
-                                //Internal.Cryptography.CryptoThrowHelper+WindowsCryptographicException: The system cannot find the file specified.
-                                //keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet
-                                );
-                           options.AddSigningCertificate(cert)
-                                  .AddEncryptionCertificate(cert);
-                       }
-
-                       options.DisableAccessTokenEncryption();
-                       //.RegisterScopes("api", "profile");
-
-                       options.UseAspNetCore()
-                               .EnableTokenEndpointPassthrough()
-                               .EnableAuthorizationEndpointPassthrough()
-                               .EnableLogoutEndpointPassthrough()
-                               .EnableUserinfoEndpointPassthrough();
-
-                       if (builder.Environment.IsDevelopment())
-                           options.UseAspNetCore()
-                                  .DisableTransportSecurityRequirement();
-                   });
+            builder.Services.AddEventBusConfiguration(builder.Configuration);
 
             builder.Services.AddScoped<AccountService>();
             builder.Services.AddHostedService<Workers.Seeder>();

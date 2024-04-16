@@ -9,4 +9,13 @@
         public string[] AchieveAudiences { get; set; }
         public string[] PayrollClients { get; set; }
     }
+
+    public class EventBusSettings
+    {
+        public const string settings = "EventBus";
+        public string Connection { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string RetryCount { get; set; }
+    }
 }
