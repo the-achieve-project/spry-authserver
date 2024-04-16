@@ -23,8 +23,8 @@ namespace Spry.Identity.Services
                 Subject = info.Subject,
                 TemplateLocale = info.EmailTemplateLocale,
                 Content = JsonConvert.SerializeObject(info.Content),
-                Sender = configuration["EmailSender"],
-                SenderName = configuration["EmailSenderName"],
+                Sender = configuration["Email:Sender"],
+                SenderName = configuration["Email:SenderName"],
                 AttachmentContent = info.AttachmentContent,
                 AttachmentFileName = info.AttachmentFileName,
                 AttachmentMimeType = info.AttachmentMimeType,
@@ -45,8 +45,8 @@ namespace Spry.Identity.Services
                     Template = copiedMailInfo.EmailTemplate,
                     TemplateLocale = copiedMailInfo.EmailTemplateLocale,
                     Content = JsonConvert.SerializeObject(copiedMailInfo.Content),
-                    Sender = configuration["EmailSender"],
-                    SenderName = configuration["EmailSenderName"]
+                    Sender = configuration["Email:Sender"],
+                    SenderName = configuration["Email:SenderName"]
                 };
 
                 if (info.Ccs.Any())

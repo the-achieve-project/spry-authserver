@@ -1,3 +1,6 @@
+using Autofac.Core;
+using Autofac.Extensions.DependencyInjection;
+using Autofac;
 using Microsoft.EntityFrameworkCore;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
@@ -14,6 +17,14 @@ namespace Spry.Identity
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
+            builder.Host
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory())
+                .ConfigureContainer<ContainerBuilder>((container) =>
+                {
+                    container.RegisterType<AccountService>().InstancePerLifetimeScope();
+                    container.RegisterType<MessagingService>().InstancePerLifetimeScope();
+                });
+            
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
@@ -59,10 +70,8 @@ namespace Spry.Identity
             });
 
             builder.Services.AddOpenIddictConfiguration(builder);
-
             builder.Services.AddEventBusConfiguration(builder.Configuration);
 
-            builder.Services.AddScoped<AccountService>();
             builder.Services.AddHostedService<Workers.Seeder>();
 
             var app = builder.Build();

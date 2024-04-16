@@ -101,7 +101,7 @@ namespace Spry.Identity.Controllers
                     {
                         // 'subject' claim which is required
                         new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
-                        new Claim("some claim", "some value").SetDestinations(OpenIddictConstants.Destinations.AccessToken)
+                        new Claim("src", "oidc").SetDestinations(OpenIddictConstants.Destinations.AccessToken)
                     };
 
             var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
