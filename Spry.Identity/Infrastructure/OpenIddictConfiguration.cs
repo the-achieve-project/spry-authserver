@@ -49,21 +49,24 @@ namespace Spry.Identity.Infrastructure
                               .SetIntrospectionEndpointUris("/connect/introspect")
                               .SetLogoutEndpointUris("/connect/endsession");
 
-                      //if (builder.Environment.IsDevelopment())
-                      //{
-                      //    options.AddDevelopmentEncryptionCertificate()
-                      //            .AddDevelopmentSigningCertificate();
-                      //}
-                      //else if (builder.Environment.IsProduction())
-                      //{
-                          var cert = new X509Certificate2("everwage.key.prod.pfx", serverSettings.CertificatePasswordProd
-                               //it is important to use X509KeyStorageFlags.EphemeralKeySet to avoid 
-                               //Internal.Cryptography.CryptoThrowHelper+WindowsCryptographicException: The system cannot find the file specified.
-                               //keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet
-                               );
+                      if (builder.Environment.IsDevelopment())
+                      {
+                          //options.AddDevelopmentEncryptionCertificate()
+                          //        .AddDevelopmentSigningCertificate();
+                          var cert = new X509Certificate2("everwage.key.dev.pfx", serverSettings.CertificatePasswordProd);
                           options.AddSigningCertificate(cert)
                                  .AddEncryptionCertificate(cert);
-                      //}
+                      }
+                      else if (builder.Environment.IsProduction())
+                      {
+                          var cert = new X509Certificate2("everwage.key.prod.pfx", serverSettings.CertificatePasswordProd
+                                   //it is important to use X509KeyStorageFlags.EphemeralKeySet to avoid 
+                                   //Internal.Cryptography.CryptoThrowHelper+WindowsCryptographicException: The system cannot find the file specified.
+                                   //keyStorageFlags: X509KeyStorageFlags.EphemeralKeySet
+                                   );
+                          options.AddSigningCertificate(cert)
+                                 .AddEncryptionCertificate(cert);
+                      }
 
                       options.DisableAccessTokenEncryption();
                       //.RegisterScopes("api", "profile");
