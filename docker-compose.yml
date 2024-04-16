@@ -18,34 +18,34 @@ services:
       spryid:
     ports:
      - "5312:8080"
-    depends_on: 
-      - postgres.data
+    # depends_on: 
+    #   - postgres.data
 
-  postgres.data:
-    image: postgres:11
-    logging: *default-logging
-    networks: 
-      spryid:
-    environment:
-      - POSTGRES_PASSWORD=spry-password
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data 
+  # postgres.data:
+  #   image: postgres:11
+  #   logging: *default-logging
+  #   networks: 
+  #     spryid:
+  #   environment:
+  #     - POSTGRES_PASSWORD=spry-password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data 
 
-  pgadmin:
-    image: dpage/pgadmin4 #dpage/pgadmin4
-    environment: 
-      PGADMIN_DEFAULT_EMAIL: info@spryonline.com
-      PGADMIN_DEFAULT_PASSWORD: spry-password
-    networks:
-      spryid:
-    volumes:
-      - pgadmindata:/var/lib/pgadmin
-    ports: 
-      - "5103:80"
-    depends_on:
-      - postgres.data
+  # pgadmin:
+  #   image: dpage/pgadmin4 #dpage/pgadmin4
+  #   environment: 
+  #     PGADMIN_DEFAULT_EMAIL: info@spryonline.com
+  #     PGADMIN_DEFAULT_PASSWORD: spry-password
+  #   networks:
+  #     spryid:
+  #   volumes:
+  #     - pgadmindata:/var/lib/pgadmin
+  #   ports: 
+  #     - "5103:80"
+  #   depends_on:
+  #     - postgres.data
 
 networks: 
   spryid:

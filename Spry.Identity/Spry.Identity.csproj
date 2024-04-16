@@ -31,4 +31,13 @@
     <PackageReference Include="Spry.IntegrationEventLog.EF" Version="1.0.8" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="everwage.key.dev.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="everwage.key.prod.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
