@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
@@ -32,15 +31,7 @@ namespace Spry.Identity.Controllers
                 // Subject (sub) is a required field, we use the client id as the subject identifier here.
                 identity.AddClaim(OpenIddictConstants.Claims.Subject, request.ClientId ?? throw new InvalidOperationException());
 
-                // Add some claim, don't forget to add destination otherwise it won't be added to the access token.
-                //identity.AddClaim(new Claim("some-claim", "some-value").SetDestinations(OpenIddictConstants.Destinations.AccessToken));
-
                 claimsPrincipal = new ClaimsPrincipal(identity);
-
-                //foreach (var item in request.GetScopes())
-                //{
-                //    identity.AddClaim(new Claim("scope", item).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
-                //}
 
                 claimsPrincipal.SetScopes(request.GetScopes());
             }
