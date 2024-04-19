@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
@@ -32,7 +30,6 @@ namespace Spry.Identity.Pages.Account
 
             [Required]
             public string Code { get; set; }
-
         }
 
         public IActionResult OnGet(string code = null)
@@ -40,6 +37,7 @@ namespace Spry.Identity.Pages.Account
             if (code == null)
             {
                 return BadRequest("A code must be supplied for password reset.");
+                //return RedirectToPage("/Error");
             }
             else
             {

@@ -115,7 +115,7 @@ namespace Spry.Identity.Infrastructure
         {
             if (context == null)
             {
-                throw new ArgumentNullException("context");
+                //throw new ArgumentNullException("context");
             }
         }
     }

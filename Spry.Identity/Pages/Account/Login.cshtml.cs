@@ -17,6 +17,7 @@ namespace Spry.Identity.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
+        //ToDo: if request doesnt contain tenant in acr_values redirect to user-organization page selection
         public async Task OnGetAsync(string returnUrl = null)
         {
             if (!string.IsNullOrEmpty(ErrorMessage))

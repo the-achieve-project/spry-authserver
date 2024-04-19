@@ -65,6 +65,7 @@ namespace Spry.Identity.Controllers
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
+        //ToDo: change sub to achieveId
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]
         [IgnoreAntiforgeryToken]
@@ -92,8 +93,15 @@ namespace Spry.Identity.Controllers
                     {
                         // 'subject' claim which is required
                         new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
-                        new Claim("src", "oidc").SetDestinations(OpenIddictConstants.Destinations.AccessToken)
+                        new Claim("src", "oiddict").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
+                        new Claim("is_migrated", "true").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
                     };
+
+            if (request.ClientId != ClientIds.AchieveApp)
+            {
+                claims.Add(new Claim("tenant", request.AcrValues!.Split(':')[1]).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                claims.Add(new Claim("user", user.GetClaim(ClaimTypes.Name)!).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+            }
 
             var claimsIdentity = new ClaimsIdentity(claims, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
 
