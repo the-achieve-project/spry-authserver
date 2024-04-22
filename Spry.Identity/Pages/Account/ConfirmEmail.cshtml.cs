@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Spry.Identity.Models;
+using Spry.Identity.Utility;
 using System.Text;
 
 namespace Spry.Identity.Pages.Account
@@ -26,7 +27,18 @@ namespace Spry.Identity.Pages.Account
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await userManager.ConfirmEmailAsync(user, code);
-            StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
+
+            if (result.Succeeded)
+            {
+                user.AchieveId = $"AI{new Hasher(user.SequenceId).Hash()}";
+
+                await userManager.UpdateAsync(user);
+                StatusMessage = "Thank you for confirming your email.";
+            }
+            else
+            {
+                StatusMessage = "Error confirming your email.";
+            }
             return Page();
         }
     }

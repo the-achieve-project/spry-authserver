@@ -70,7 +70,7 @@ namespace Spry.Identity.Controllers
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]
         [IgnoreAntiforgeryToken]
-        public IActionResult Authorize()
+        public async Task<IActionResult> Authorize()
         {
             var request = HttpContext.GetOpenIddictServerRequest() ??
                 throw new InvalidOperationException("The OpenID Connect request cannot be retrieved.");
@@ -89,11 +89,13 @@ namespace Spry.Identity.Controllers
                     });
             }
 
-            // Create a new claims principal
+            var dbUser = await signInManager.UserManager.FindByIdAsync(user.GetClaim(ClaimTypes.NameIdentifier)!);
+
             var claims = new List<Claim>
                     {
                         // 'subject' claim which is required
-                        new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
+                        //new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
+                        new(OpenIddictConstants.Claims.Subject, dbUser!.AchieveId!),
                         new Claim("src", "oiddict").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
                         new Claim("is_migrated", "true").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
                     };

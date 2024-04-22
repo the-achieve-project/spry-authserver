@@ -44,30 +44,38 @@ namespace Spry.Identity.Pages.Account
                 return Page();
             }
 
-            var userId = await userManager.GetUserIdAsync(user);
-            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var callbackUrl = Url.Page(
-                "/Account/ConfirmEmail", pageHandler: null,
-                values: new { userId = userId, code = code },
-                protocol: Request.Scheme);
-
-            var mail = new MailInfo
+            if (!await userManager.IsEmailConfirmedAsync(user))
             {
-                RxEmail = user.Email,
-                RxName = user.FirstName,
-                EmailTemplate = configuration["EmailTemplates:ConfirmAccount"],
-                EmailTemplateLocale = configuration["EmailTemplates:ConfirmAccount"],
-                Content = new
+                var userId = await userManager.GetUserIdAsync(user);
+                var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail", pageHandler: null,
+                    values: new { userId = userId, code = code },
+                    protocol: Request.Scheme);
+
+                var mail = new MailInfo
                 {
-                    first_name = user.FirstName,
-                    reset_url = callbackUrl
-                }
-            };
+                    RxEmail = user.Email,
+                    RxName = user.FirstName,
+                    EmailTemplate = configuration["EmailTemplates:ConfirmAccount"],
+                    EmailTemplateLocale = configuration["EmailTemplates:ConfirmAccount"],
+                    Content = new
+                    {
+                        first_name = user.FirstName,
+                        reset_url = callbackUrl
+                    }
+                };
 
-            messagingService.SendMail(mail);
+                messagingService.SendMail(mail);
 
-            ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "account has already been confirmed.");
+            }
+
             return Page();
         }
     }
