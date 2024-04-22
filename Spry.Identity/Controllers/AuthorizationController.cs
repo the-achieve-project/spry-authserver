@@ -66,6 +66,7 @@ namespace Spry.Identity.Controllers
         }
 
         //ToDo: change sub to achieveId
+        //ToDo: if acr:values doesnt contain tenant redirect to find-company page
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]
         [IgnoreAntiforgeryToken]
@@ -99,7 +100,10 @@ namespace Spry.Identity.Controllers
 
             if (request.ClientId != ClientIds.AchieveApp)
             {
-                claims.Add(new Claim("tenant", request.AcrValues!.Split(':')[1]).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                if (!string.IsNullOrEmpty(request.AcrValues))
+                {
+                    claims.Add(new Claim("tenant", request.AcrValues.Split(':')[1]).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
+                }
                 claims.Add(new Claim("user", user.GetClaim(ClaimTypes.Name)!).SetDestinations(OpenIddictConstants.Destinations.AccessToken));
             }
 

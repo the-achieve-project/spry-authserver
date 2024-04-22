@@ -8,7 +8,6 @@ using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
 
-
 namespace Spry.Identity
 {
     public class Program
