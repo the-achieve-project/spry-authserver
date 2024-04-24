@@ -6,14 +6,16 @@ using System.Reflection.Emit;
 
 namespace Spry.Identity.Data
 {
-    public class IdentityDataContext : IdentityDbContext<User, UserRole, Guid>
+    public class IdentityDataContext(DbContextOptions<IdentityDataContext> options) : IdentityDbContext<User, UserRole, Guid>(options)
     {
         public const string AIdSqlSequenceName = "AIdNumbers";
-        public IdentityDataContext(DbContextOptions<IdentityDataContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.HasSequence<long>(AIdSqlSequenceName);
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                builder.HasSequence<long>(AIdSqlSequenceName);
+            }
 
             builder.ApplyConfiguration(new UserConfiguration());
             base.OnModelCreating(builder);

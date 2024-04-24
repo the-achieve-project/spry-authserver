@@ -66,14 +66,20 @@ namespace Spry.Identity.Pages.Account
                 {
                     var user = await signInManager.UserManager.FindByEmailAsync(Input.Email);
 
-                    if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
+                    if (user != null)
                     {
-                        ModelState.AddModelError(string.Empty, "email not confirmed.");
+                        if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
+                        {
+                            ModelState.AddModelError(string.Empty, "email not confirmed.");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        }
                     }
-                    else
-                    {
-                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    }
+
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
                     return Page();
                 }
             }

@@ -19,12 +19,15 @@ namespace Spry.Identity.Migrations
                 type: "text",
                 nullable: true);
 
-            migrationBuilder.AddColumn<long>(
+            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            {
+                migrationBuilder.AddColumn<long>(
                 name: "SequenceId",
                 table: "AspNetUsers",
                 type: "bigint",
                 nullable: false,
                 defaultValueSql: "nextval('\"AIdNumbers\"')");
+            }          
         }
 
         /// <inheritdoc />

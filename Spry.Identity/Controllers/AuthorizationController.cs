@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
@@ -126,11 +127,11 @@ namespace Spry.Identity.Controllers
         {
             var claimsPrincipal = (await HttpContext.AuthenticateAsync(OpenIddictServerAspNetCoreDefaults.AuthenticationScheme)).Principal;
 
-            User user = (await signInManager.UserManager.FindByIdAsync(claimsPrincipal!.GetClaim("sub")!))!;
+            User user = (await signInManager.UserManager.Users.FirstAsync(u => u.AchieveId == claimsPrincipal!.GetClaim("sub")!))!;
 
             return Ok(new UserInfo
             {
-                Sub = user.Id.ToString(),
+                Sub = user.AchieveId,
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 OtherNames = user.OtherNames,

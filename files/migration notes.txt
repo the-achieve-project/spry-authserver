@@ -1,0 +1,17 @@
+public partial class AIdSequence2 : Migration
+{
+    /// <inheritdoc />
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.CreateSequence(
+            name: "AIdNumbersDev",
+            startValue: 40L);
+    }
+
+    /// <inheritdoc />
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        migrationBuilder.DropSequence(
+            name: "AIdNumbersDev");
+    }
+}
