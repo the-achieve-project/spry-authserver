@@ -33,6 +33,13 @@
     "Description": "This API enables access to Payroll Information",
     "Scopes": [ "spry.payroll" ],
     "ClientSecret": "013E5FED-5C28-489C-A74F-FC2209FAEC95"
+  }, 
+  {
+    "Name": "spry.payslip",
+    "DisplayName": "SPRY payslips API",
+    "Description": "This API enables access to Payroll Information",
+    "Scopes": [ "spry.payslip" ],
+    "ClientSecret": "113E5FED-6C28-589C-A74F-FC2209FAEC95"
   },
   {
     "Name": "spry.time",
