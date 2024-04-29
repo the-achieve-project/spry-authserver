@@ -25,7 +25,6 @@ namespace Spry.Identity.Pages.Account
 
         private static readonly string[] payrollClients = ["spry.admin", "spry.ess"];
 
-        //ToDo: if request doesnt contain tenant in acr_values redirect to user-organization page selection
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
             var uri = new Uri($"http://localhost{WebUtility.UrlDecode(returnUrl)}");
@@ -33,7 +32,7 @@ namespace Spry.Identity.Pages.Account
             string acrValues = HttpUtility.ParseQueryString(uri.Query).Get("acr_values");
             string clientId = HttpUtility.ParseQueryString(uri.Query).Get("client_id");
 
-            if (string.IsNullOrEmpty(acrValues) && !(payrollClients).Contains(clientId))
+            if (string.IsNullOrEmpty(acrValues) && (payrollClients).Contains(clientId))
             {
                 return Redirect(configuration["Idsrv4Urls:AccountSelection"]);
             }
