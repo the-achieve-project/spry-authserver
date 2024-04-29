@@ -1,11 +1,17 @@
+using Microsoft.AspNetCore;
+using OpenIddict.Abstractions;
 using Spry.Identity.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
+using System.Text.Encodings.Web;
+using System.Web;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class LoginModel(SignInManager<User> signInManager, ILogger<LoginModel> logger) : PageModel
+    public class LoginModel(SignInManager<User> signInManager, 
+        ILogger<LoginModel> logger, IConfiguration configuration) : PageModel
     {
         [BindProperty]
         public InputModel Input { get; set; }
@@ -17,9 +23,21 @@ namespace Spry.Identity.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
+        private static readonly string[] payrollClients = ["spry.admin", "spry.ess"];
+
         //ToDo: if request doesnt contain tenant in acr_values redirect to user-organization page selection
-        public async Task OnGetAsync(string returnUrl = null)
+        public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
+            var uri = new Uri($"http://localhost{WebUtility.UrlDecode(returnUrl)}");
+
+            string acrValues = HttpUtility.ParseQueryString(uri.Query).Get("acr_values");
+            string clientId = HttpUtility.ParseQueryString(uri.Query).Get("client_id");
+
+            if (string.IsNullOrEmpty(acrValues) && !(payrollClients).Contains(clientId))
+            {
+                return Redirect(configuration["Idsrv4Urls:AccountSelection"]);
+            }
+
             if (!string.IsNullOrEmpty(ErrorMessage))
             {
                 ModelState.AddModelError(string.Empty, ErrorMessage);
@@ -33,6 +51,8 @@ namespace Spry.Identity.Pages.Account
             ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
             ReturnUrl = returnUrl;
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)

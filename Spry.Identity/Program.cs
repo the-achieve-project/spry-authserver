@@ -16,12 +16,7 @@ namespace Spry.Identity
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory())
-                        .ConfigureContainer<ContainerBuilder>((container) =>
-                        {
-                            container.RegisterType<AccountService>().InstancePerLifetimeScope();
-                            container.RegisterType<MessagingService>().InstancePerLifetimeScope();
-                        });
+            builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
             
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -64,6 +59,9 @@ namespace Spry.Identity
                 options.Password.RequireUppercase = false;
                 options.User.RequireUniqueEmail = true;
             });
+
+            builder.Services.AddScoped<AccountService>();
+            builder.Services.AddScoped<MessagingService>();
 
             builder.Services.AddOpenIddictConfiguration(builder);
             builder.Services.AddEventBusConfiguration(builder.Configuration);
