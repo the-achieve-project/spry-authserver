@@ -66,8 +66,7 @@ namespace Spry.Identity.Controllers
             return SignIn(claimsPrincipal, OpenIddictServerAspNetCoreDefaults.AuthenticationScheme);
         }
 
-        //ToDo: change sub to achieveId
-        //ToDo: if acr:values doesnt contain tenant redirect to find-company page
+
         [HttpGet("~/connect/authorize")]
         [HttpPost("~/connect/authorize")]
         [IgnoreAntiforgeryToken]

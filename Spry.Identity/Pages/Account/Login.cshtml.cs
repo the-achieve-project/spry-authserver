@@ -25,6 +25,7 @@ namespace Spry.Identity.Pages.Account
 
         private static readonly string[] payrollClients = ["spry.admin", "spry.ess"];
 
+        //ToDo: check if already logged in
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
             var uri = new Uri($"http://localhost{WebUtility.UrlDecode(returnUrl)}");

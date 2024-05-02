@@ -127,6 +127,41 @@ namespace Spry.Identity.SeedWork
                     },
                 }, cancellationToken);
             }
+            
+            if (await manager.FindByClientIdAsync("spry.idsrv4", cancellationToken) is null)
+            {
+                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                {
+                    ClientId = "spry.idsrv4",
+                    ClientType = ClientTypes.Public,
+                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
+                    },
+                    Permissions =
+                    {
+                        Permissions.Endpoints.Authorization,
+                        Permissions.Endpoints.Token,
+
+                        Permissions.GrantTypes.AuthorizationCode,
+                        Permissions.GrantTypes.ClientCredentials,
+                        Permissions.GrantTypes.RefreshToken,
+                        Permissions.ResponseTypes.Code,
+
+                        Permissions.Scopes.Email,
+                        Permissions.Scopes.Profile,
+
+                        Permissions.Prefixes.Scope + "spry.pim",
+                        Permissions.Prefixes.Scope + "spry.time",
+                        Permissions.Prefixes.Scope + "spry.messaging",
+                        Permissions.Prefixes.Scope + "spry.payroll",
+                        Permissions.Prefixes.Scope + "spry.id",
+                        Permissions.Prefixes.Scope + "spry.company",
+                    },
+                    Requirements =
+                    {
+                        Requirements.Features.ProofKeyForCodeExchange,
+                    },
+                }, cancellationToken);
+            }
         }
     }
 
