@@ -59,8 +59,6 @@ namespace Spry.Identity.Infrastructure
 
                       if (builder.Environment.IsDevelopment())
                       {
-                          //options.AddDevelopmentEncryptionCertificate()
-                          //        .AddDevelopmentSigningCertificate();
                           var cert = new X509Certificate2("everwage.key.dev.pfx", serverSettings.CertificatePasswordProd);
                           options.AddSigningCertificate(cert)
                                  .AddEncryptionCertificate(cert);

@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
+using Spry.Identity.Workers;
+using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -18,13 +21,16 @@ namespace Spry.Identity.Pages.Account
         readonly ILogger<RegisterModel> _logger;
         readonly MessagingService _messagingService;
         readonly IConfiguration _configuration;
+        readonly IConnectionMultiplexer _redis;
+
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
             SignInManager<User> signInManager,
             ILogger<RegisterModel> logger,
             MessagingService messagingService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            IConnectionMultiplexer redis)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -33,6 +39,7 @@ namespace Spry.Identity.Pages.Account
             _logger = logger;
             _messagingService = messagingService;
             _configuration = configuration;
+            _redis = redis;
         }
         #endregion
 
@@ -57,6 +64,10 @@ namespace Spry.Identity.Pages.Account
             [Required]
             [Display(Name = "Last name")]
             public string LastName { get; set; }
+            
+            //[Required]
+            [Display(Name = "Phone")]
+            public string PhoneNumber { get; set; }
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
@@ -88,6 +99,7 @@ namespace Spry.Identity.Pages.Account
                     FirstName = Input.FirstName,
                     LastName = Input.LastName,
                     Email = Input.Email,
+                    PhoneNumber = Input.PhoneNumber,
                 };
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
@@ -100,32 +112,29 @@ namespace Spry.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        var userId = await _userManager.GetUserIdAsync(user);
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var code = OtpGenerator.Create();
 
-                        var callbackUrl = Url.Page("/Account/ConfirmEmail",
-                            pageHandler: null, values: new { userId, code, returnUrl },
-                            protocol: Request.Scheme);
+                        var dbResult = await _redis.GetDatabase(0).StringSetAsync($"2FA:{user.Id}", code,
+                                          TimeSpan.FromMinutes(int.Parse(_configuration["OtpExpiryTimeInMins"])));
 
-                        _logger.LogInformation( "Confirm account link: {0}", HtmlEncoder.Default.Encode(callbackUrl));
+                        _logger.LogInformation("Confirm account otp: {0}", code);
 
                         var mail = new MailInfo
                         {
                             RxEmail = user.Email,
                             RxName = user.FirstName,
-                            EmailTemplate = _configuration["EmailTemplates:ConfirmAccount"],
-                            EmailTemplateLocale = _configuration["EmailTemplates:ConfirmAccount"],
+                            EmailTemplate = _configuration["EmailTemplates:2fa"],
+                            EmailTemplateLocale = _configuration["EmailTemplates:2fa"],
                             Content = new
                             {
                                 first_name = user.FirstName,
-                                reset_url = callbackUrl
+                                code
                             }
                         };
 
                         _messagingService.SendMail(mail);
 
-                        return RedirectToPage("./RegisterConfirmation");
+                        return RedirectToPage("./ConfirmAccount", new { ReturnUrl = returnUrl, user.Id });
                     }
                     else
                     {
@@ -140,6 +149,7 @@ namespace Spry.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
+            ReturnUrl = returnUrl;
             return Page();
         }
 

@@ -7,14 +7,22 @@ using Spry.Identity.Infrastructure;
 using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
+using StackExchange.Redis;
+using System.Configuration;
 
 namespace Spry.Identity
 {
     public class Program
     {
         public static void Main(string[] args)
-        {
+        {          
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+            Lazy<ConnectionMultiplexer> _lazyRedis = new(() =>
+            {
+                var cacheConnection = builder.Configuration.GetConnectionString("SpryRedisStore");
+                return ConnectionMultiplexer.Connect(cacheConnection!);
+            });
 
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
             
@@ -60,6 +68,7 @@ namespace Spry.Identity
                 options.User.RequireUniqueEmail = true;
             });
 
+            builder.Services.AddSingleton<IConnectionMultiplexer>(_lazyRedis.Value);
             builder.Services.AddScoped<AccountService>();
             builder.Services.AddScoped<MessagingService>();
 

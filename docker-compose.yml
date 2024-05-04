@@ -19,35 +19,35 @@ services:
       spryid:
     ports:
      - "5312:8080"
-    depends_on: 
-      - postgres.data
-      - rabbitmq
+    # depends_on: 
+    #   - postgres.data
+    #   - rabbitmq
 
-  postgres.data:
-    image: postgres:11
-    logging: *default-logging
-    networks: 
-      spryid:
-    environment:
-      - POSTGRES_PASSWORD=spry-password
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data 
+  # postgres.data:
+  #   image: postgres:11
+  #   logging: *default-logging
+  #   networks: 
+  #     spryid:
+  #   environment:
+  #     - POSTGRES_PASSWORD=spry-password
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data 
   
-  rabbitmq:
-    image: rabbitmq:3.8-management-alpine
-    logging: *default-logging
-    networks: 
-      spryid:
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=spry-password
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    volumes:
-     - rabbitdata:/var/lib/rabbitmq
+  # rabbitmq:
+  #   image: rabbitmq:3.8-management-alpine
+  #   logging: *default-logging
+  #   networks: 
+  #     spryid:
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=user
+  #     - RABBITMQ_DEFAULT_PASS=spry-password
+  #   ports:
+  #     - "15672:15672"
+  #     - "5672:5672"
+  #   volumes:
+  #    - rabbitdata:/var/lib/rabbitmq
 
   # pgadmin:
   #   image: dpage/pgadmin4 #dpage/pgadmin4
