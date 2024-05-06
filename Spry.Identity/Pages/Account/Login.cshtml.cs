@@ -57,7 +57,7 @@ namespace Spry.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
 
             ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 
@@ -71,11 +71,11 @@ namespace Spry.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     logger.LogInformation("User logged in.");
-                    return LocalRedirect(returnUrl);
+                    return LocalRedirect(ReturnUrl);
                 }
                 if (result.RequiresTwoFactor)
                 {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl = returnUrl, RememberMe = Input.RememberMe });
+                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl, Input.RememberMe });
                 }
                 if (result.IsLockedOut)
                 {
@@ -90,7 +90,7 @@ namespace Spry.Identity.Pages.Account
                     {
                         if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
                         {
-                            ModelState.AddModelError(string.Empty, "email not confirmed.");
+                            ModelState.AddModelError(string.Empty, "account not confirmed.");
                         }
                         else
                         {

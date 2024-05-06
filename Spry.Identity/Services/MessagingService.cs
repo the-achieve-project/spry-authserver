@@ -84,6 +84,16 @@ namespace Spry.Identity.Services
         {
             eventBus.PublishTask(sms_Task);
         }
+
+        public void SendSMS2faNotice(string phone, string code)
+        {
+            eventBus.PublishTask(new Sms_Task
+            {
+                //From = _configuration["DefaultSmsHeader"], // set in messaging service
+                To = phone,
+                Text = $"Use verification code {code} for Achieve authencation."
+            });
+        }
     }
 
     #region classes

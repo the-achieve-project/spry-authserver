@@ -117,6 +117,14 @@ namespace Spry.Identity.Pages.Account
                         var dbResult = await _redis.GetDatabase(0).StringSetAsync($"2FA:{user.Id}", code,
                                           TimeSpan.FromMinutes(int.Parse(_configuration["OtpExpiryTimeInMins"])));
 
+                        if (!dbResult)
+                        {
+                            _logger.LogError("failed to generate verification code");
+                            ModelState.AddModelError(string.Empty, "An error occured. Try again");
+                            ReturnUrl = returnUrl;
+                            return Page();
+                        }
+
                         _logger.LogInformation("Confirm account otp: {0}", code);
 
                         var mail = new MailInfo

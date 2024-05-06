@@ -1,23 +1,23 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
 using System.Text;
 using Spry.Identity.Services;
 using Spry.Identity.Models;
+using Spry.Identity.Workers;
+using StackExchange.Redis;
 
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
     [AllowAnonymous]
     public class ResendEmailConfirmationModel(UserManager<User> userManager,
-        MessagingService messagingService, 
+        MessagingService messagingService, IConnectionMultiplexer redis,
+        ILogger<ResendEmailConfirmationModel> logger,
         IConfiguration configuration) : PageModel
     {
         [BindProperty]
         public InputModel Input { get; set; }
-
+        public string ReturnUrl { get; set; }
         public class InputModel
         {
             [Required]
@@ -25,12 +25,15 @@ namespace Spry.Identity.Pages.Account
             public string Email { get; set; }
         }
 
-        public void OnGet()
+        public void OnGet(string returnUrl = null)
         {
+            ReturnUrl = returnUrl;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            ReturnUrl ??= Url.Content("~/");
+
             if (!ModelState.IsValid)
             {
                 return Page();
@@ -40,36 +43,50 @@ namespace Spry.Identity.Pages.Account
 
             if (user == null)
             {
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                ModelState.AddModelError(string.Empty, "Verification code sent via email/sms.");
                 return Page();
             }
 
             if (!await userManager.IsEmailConfirmedAsync(user))
             {
-                var userId = await userManager.GetUserIdAsync(user);
-                var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page(
-                    "/Account/ConfirmEmail", pageHandler: null,
-                    values: new { userId = userId, code = code },
-                    protocol: Request.Scheme);
+                var code = OtpGenerator.Create();
 
-                var mail = new MailInfo
+                var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA:{user.Id}", code,
+                                  TimeSpan.FromMinutes(int.Parse(configuration["OtpExpiryTimeInMins"])));
+
+                if (!dbResult)
                 {
-                    RxEmail = user.Email,
-                    RxName = user.FirstName,
-                    EmailTemplate = configuration["EmailTemplates:ConfirmAccount"],
-                    EmailTemplateLocale = configuration["EmailTemplates:ConfirmAccount"],
-                    Content = new
+                    logger.LogError("failed to generate verification code");
+                    ModelState.AddModelError(string.Empty, "An error occured. Try again");
+                    return Page();
+                }
+
+                logger.LogInformation("Confirm account otp: {0}", code);
+
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    var mail = new MailInfo
                     {
-                        first_name = user.FirstName,
-                        reset_url = callbackUrl
-                    }
-                };
+                        RxEmail = user.Email,
+                        RxName = user.FirstName,
+                        EmailTemplate = configuration["EmailTemplates:2fa"],
+                        EmailTemplateLocale = configuration["EmailTemplates:2fa"],
+                        Content = new
+                        {
+                            first_name = user.FirstName,
+                            code
+                        }
+                    };
 
-                messagingService.SendMail(mail);
+                    messagingService.SendMail(mail);
+                }
 
-                ModelState.AddModelError(string.Empty, "Verification email sent. Please check your email.");
+                if (!string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    messagingService.SendSMS2faNotice(user.PhoneNumber, code);
+                }
+
+                return RedirectToPage("./ConfirmAccount", new { ReturnUrl = returnUrl, user.Id });
             }
             else
             {
