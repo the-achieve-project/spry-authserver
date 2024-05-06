@@ -17,13 +17,17 @@
             <p>You are signed in as</p>
             <h2>@User.Identity.Name</h2>
             <hr />
-            <dl>
-                <dt>Issued</dt>
-                <dd>@issued</dd>
-                <dt>Expires</dt>
-                <dd>@expires</dd>
-            </dl>
-            <hr />
+
+            <environment include="Development">
+                <dl>
+                    <dt>Issued</dt>
+                    <dd>@issued</dd>
+                    <dt>Expires</dt>
+                    <dd>@expires</dd>
+                </dl>
+                <hr />
+            </environment>
+            
             <p><a class="btn btn-dark" asp-page="./Account/Logout">Sign out</a></p>
         </div>
     }
