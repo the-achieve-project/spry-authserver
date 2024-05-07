@@ -1,0 +1,60 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="./css/index.css" />
+  <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="min-vh-100 d-flex justify-content-center align-items-center">
+    <div class="card card__layout card__width">
+      <img class="text-center ml-auto mr-auto" alt="achieve logo" src="./images/achieve-logo-white.svg"  />
+      <div class="signUp__header__container">
+        <h4 class="signUp__header">Register</h4>
+        <p class="signUp_subParagraph">
+          Create a new  account
+        </p>
+      </div>
+      <form class="signUp w-100">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input aria-label="email" class="form-control ach__input" type="text" placeholder="Email">
+        </div>
+            <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input aria-label="firstName" class="form-control ach__input" type="text" placeholder="First Name">
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input aria-label="lastName" class="form-control ach__input" type="text" placeholder="Last Name">
+        </div>
+         <div class="form-group">
+          <label for="password">Password</label>
+          <input aria-label="password" class="form-control ach__input" type="password" placeholder="Password">
+        </div>
+         <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input aria-label="confirmPassword" class="form-control ach__input" type="password" placeholder="Confirm Password">
+        </div>
+        <button aria-label="create user account" type="submit" class="btn btn-primary w-100"> Proceed</button>
+
+      </form>
+    </div>
+
+  </main>
+</body>
+ <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    socket.on('reload', () => {
+      console.log('Reloading page...');
+      location.reload();
+    });
+  </script>
+</html>
