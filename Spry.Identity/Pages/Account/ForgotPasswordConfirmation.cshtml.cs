@@ -1,5 +1,6 @@
 using Spry.Identity.Models;
 using Spry.Identity.Utility;
+using Spry.Identity.Workers;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,7 +10,9 @@ namespace Spry.Identity.Pages.Account
     [AllowAnonymous]
     public class ForgotPasswordConfirmationModel(
         IConnectionMultiplexer redis,
-        UserManager<User> userManager) : PageModel
+        UserManager<User> userManager,
+        ILogger<ForgotPasswordConfirmationModel> logger,
+        IConfiguration configuration) : PageModel
     {
         readonly IDatabase redisDb = redis.GetDatabase();
 
@@ -20,6 +23,9 @@ namespace Spry.Identity.Pages.Account
 
         [TempData]
         public string Code { get; set; }
+
+        [TempData]
+        public string StatusMessage { get; set; }
 
         public class InputModel
         {
@@ -68,6 +74,25 @@ namespace Spry.Identity.Pages.Account
                 }
             }
 
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostResend(Guid userId, string returnUrl = null)
+        {
+            var code = OtpGenerator.Create();
+            var user = await userManager.FindByIdAsync(Input.UserId.ToString());
+
+            var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA_FP:{user.Id}", code,
+                              TimeSpan.FromMinutes(int.Parse(configuration["OtpExpiryTimeInMins"])));
+
+            if (dbResult)
+            {
+                StatusMessage = "verification code resent.";
+                logger.LogInformation("Confirm account otp: {0}", code);
+            }
+
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+            Input.UserId = userId;
             return Page();
         }
     }

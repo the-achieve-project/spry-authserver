@@ -43,9 +43,10 @@ namespace Spry.Identity.Pages.Account
         {
             ReturnUrl = returnUrl ?? Url.Content("~/");
 
+            //in case page was reloaded or this page was hit directly
             if (string.IsNullOrEmpty(Code))
             {
-                return RedirectToPage("./Login", new { ReturnUrl });
+                return RedirectToPage("./ForgotPassword", new { ReturnUrl });
             }
 
             Input.UserId = id;
