@@ -103,6 +103,11 @@ namespace Spry.Identity
 
             app.UseRouting();
 
+            //app.UseCookiePolicy(new CookiePolicyOptions
+            //{
+            //    Secure = CookieSecurePolicy.Always
+            //});
+
             app.UseAuthentication();
             app.UseAuthorization();
 

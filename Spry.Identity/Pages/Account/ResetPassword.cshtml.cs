@@ -7,17 +7,18 @@ using System.Text;
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class ResetPasswordModel(UserManager<User> userManager, MessagingService messagingService) : PageModel
+    public class ResetPasswordModel(UserManager<User> userManager,
+        MessagingService messagingService) : PageModel
     {
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
+        public string ReturnUrl { get; set; }
+
+        [TempData]
+        public string Code { get; set; }
 
         public class InputModel
         {
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
-
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
@@ -29,41 +30,38 @@ namespace Spry.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
             [Required]
-            public string Code { get; set; }
+            public Guid UserId { get; set; }
         }
 
-        public IActionResult OnGet(string code = null)
+        public IActionResult OnGet(Guid id, string returnUrl = null)
         {
-            if (code == null)
+            if (string.IsNullOrEmpty(Code))
             {
-                return BadRequest("A code must be supplied for password reset.");
-                //return RedirectToPage("/Error");
+                return RedirectToPage("./Login", new { ReturnUrl });
             }
-            else
-            {
-                Input = new InputModel
-                {
-                    Code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code))
-                };
-                return Page();
-            }
+
+            Input.UserId = id;
+            return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            var user = await userManager.FindByEmailAsync(Input.Email);
+            var user = await userManager.FindByIdAsync(Input.UserId.ToString());
             if (user == null)
             {
                 //Don't reveal that the user does not exist
-                return RedirectToPage("./ResetPasswordConfirmation");
+                return RedirectToPage("./Login", new { ReturnUrl });
             }
 
             var result = await userManager.ResetPasswordAsync(user, Input.Code, Input.Password);
+
             if (result.Succeeded)
             {
                 return RedirectToPage("./ResetPasswordConfirmation");
