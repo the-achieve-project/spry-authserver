@@ -2,7 +2,6 @@ using Spry.Identity.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Web;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spry.Identity.Pages.Account
 {

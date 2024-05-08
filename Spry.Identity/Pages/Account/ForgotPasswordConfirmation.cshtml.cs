@@ -7,8 +7,12 @@ namespace Spry.Identity.Pages.Account
 {
 #nullable disable
     [AllowAnonymous]
-    public class ForgotPasswordConfirmationModel(IConnectionMultiplexer redis, UserManager<User> userManager) : PageModel
+    public class ForgotPasswordConfirmationModel(
+        IConnectionMultiplexer redis,
+        UserManager<User> userManager) : PageModel
     {
+        readonly IDatabase redisDb = redis.GetDatabase();
+
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
@@ -37,7 +41,8 @@ namespace Spry.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var record = await redis.GetDatabase().StringGetAsync($"2FA_FP:{Input.UserId}");
+                var record = await redisDb.StringGetAsync($"2FA_FP:{Input.UserId}");
+                await redisDb.KeyDeleteAsync($"2FA_FP:{Input.UserId}");
 
                 if (!record.HasValue)
                 {
@@ -47,7 +52,18 @@ namespace Spry.Identity.Pages.Account
 
                 if (record.ToString() == Input.Code)
                 {
-                    Code = record.ToString();   
+                    Code = record.ToString();
+
+                    var user = await userManager.FindByIdAsync(Input.UserId.ToString());
+                    var code = await userManager.GeneratePasswordResetTokenAsync(user);
+
+                    var codeIsSaved = await redis.GetDatabase().StringSetAsync($"fp_code_{Input.UserId}", code, TimeSpan.FromMinutes(5));
+
+                    if (!codeIsSaved)
+                    {
+                        return RedirectToPage("./ForgotPassword", new { ReturnUrl });
+                    }
+
                     return RedirectToPage("./ResetPassword", new { ReturnUrl, id = Input.UserId });
                 }
             }

@@ -114,7 +114,7 @@ namespace Spry.Identity.Pages.Account
                     {
                         var code = OtpGenerator.Create();
 
-                        var dbResult = await _redis.GetDatabase(0).StringSetAsync($"2FA_Reg:{user.Id}", code,
+                        var dbResult = await _redis.GetDatabase().StringSetAsync($"2FA_Reg:{user.Id}", code,
                                           TimeSpan.FromMinutes(int.Parse(_configuration["OtpExpiryTimeInMins"])));
 
                         if (!dbResult)
@@ -127,20 +127,7 @@ namespace Spry.Identity.Pages.Account
 
                         _logger.LogInformation("Confirm account otp: {0}", code);
 
-                        var mail = new MailInfo
-                        {
-                            RxEmail = user.Email,
-                            RxName = user.FirstName,
-                            EmailTemplate = _configuration["EmailTemplates:2fa"],
-                            EmailTemplateLocale = _configuration["EmailTemplates:2fa"],
-                            Content = new
-                            {
-                                first_name = user.FirstName,
-                                code
-                            }
-                        };
-
-                        _messagingService.SendMail(mail);
+                        _messagingService.SendOtp(user.Email, user.FirstName, code);
 
                         return RedirectToPage("./ConfirmAccount", new { ReturnUrl = returnUrl, user.Id });
                     }

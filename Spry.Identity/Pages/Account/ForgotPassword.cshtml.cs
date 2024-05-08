@@ -7,7 +7,8 @@ using StackExchange.Redis;
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class ForgotPasswordModel(UserManager<User> userManager, IConnectionMultiplexer redis,
+    public class ForgotPasswordModel(UserManager<User> userManager,
+        IConnectionMultiplexer redis,
         ILogger<ForgotPasswordModel> logger, IConfiguration configuration,
         MessagingService messagingService) : PageModel
     {
@@ -27,8 +28,10 @@ namespace Spry.Identity.Pages.Account
             ReturnUrl = returnUrl ?? Url.Content("~/");
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+
             if (ModelState.IsValid)
             {
                 var user = await userManager.FindByEmailAsync(Input.Email);
@@ -54,20 +57,7 @@ namespace Spry.Identity.Pages.Account
 
                 if (!string.IsNullOrEmpty(user.Email))
                 {
-                    var mail = new MailInfo
-                    {
-                        RxEmail = user.Email,
-                        RxName = user.FirstName,
-                        EmailTemplate = configuration["EmailTemplates:2fa"],
-                        EmailTemplateLocale = configuration["EmailTemplates:2fa"],
-                        Content = new
-                        {
-                            first_name = user.FirstName,
-                            code
-                        }
-                    };
-
-                    messagingService.SendMail(mail);
+                    messagingService.SendOtp(user.Email, user.FirstName, code);
                 }
 
                 if (!string.IsNullOrEmpty(user.PhoneNumber))
