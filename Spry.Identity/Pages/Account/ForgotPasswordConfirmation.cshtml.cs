@@ -72,6 +72,8 @@ namespace Spry.Identity.Pages.Account
 
                     return RedirectToPage("./ResetPassword", new { ReturnUrl, id = Input.UserId });
                 }
+
+                ModelState.AddModelError(string.Empty, "invalid code");
             }
 
             return Page();
