@@ -38,7 +38,7 @@ namespace Spry.Identity.Pages.Account
                 if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    return RedirectToPage("./ForgotPasswordConfirmation", new { ReturnUrl });
                 }
 
                 var code = OtpGenerator.Create();
@@ -53,7 +53,7 @@ namespace Spry.Identity.Pages.Account
                     return Page();
                 }
 
-                logger.LogInformation("Confirm account otp: {0}", code);
+                logger.LogInformation("Confirm account otp: {code}", code);
 
                 if (!string.IsNullOrEmpty(user.Email))
                 {

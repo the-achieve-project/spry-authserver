@@ -23,27 +23,11 @@ namespace Spry.Identity.Pages.Account
         [TempData]
         public string Code { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-
-            [Required]
-            public Guid UserId { get; set; }
-        }
-
         public IActionResult OnGet(Guid id, string returnUrl = null)
         {
             ReturnUrl = returnUrl ?? Url.Content("~/");
 
-            //in case page was reloaded or this page was hit directly
+            //dont allow in case page was reloaded or this page was hit directly
             if (string.IsNullOrEmpty(Code))
             {
                 return RedirectToPage("./ForgotPassword", new { ReturnUrl });
@@ -118,6 +102,24 @@ namespace Spry.Identity.Pages.Account
             }
 
             return Page();
+        }
+
+
+
+        public class InputModel
+        {
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
+
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
+
+            [Required]
+            public Guid UserId { get; set; }
         }
     }
 }
