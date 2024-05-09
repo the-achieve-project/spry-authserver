@@ -32,6 +32,16 @@ a {
         text-decoration: underline;
     }
 
+.btn-link {
+    color: #23B78D;
+    text-decoration: none;
+}
+
+    .btn-link:hover {
+        color: #12946f;
+        text-decoration: underline;
+    }
+
 .btn-primary {
     background-color: #23B78D;
     border: 1px solid #23B78D;

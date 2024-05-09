@@ -1,18 +1,22 @@
 using Newtonsoft.Json;
 using Spry.Identity.Models;
+using Spry.Identity.Services;
 using Spry.Identity.Utility;
+using Spry.Identity.Workers;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class ConfirmAccountModel(IConnectionMultiplexer redis, UserManager<User> userManager) : PageModel
+    public class ConfirmAccountModel(IConnectionMultiplexer redis, 
+        UserManager<User> userManager, IConfiguration configuration,
+        ILogger<ConfirmAccountModel> logger, MessagingService messagingService) : PageModel
     {
         [BindProperty]
         public InputModel Input { get; set; } = new();
         public string ReturnUrl { get; set; }
-
+        public string StatusMessage { get; set; }
         public void OnGet(Guid id, string returnUrl = null)
         {
             Input.UserId = id;
@@ -53,6 +57,35 @@ namespace Spry.Identity.Pages.Account
                 return LocalRedirect(ReturnUrl);
             }
 
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostResend(Guid userId, string returnUrl = null)
+        {
+            var code = OtpGenerator.Create();
+            var user = await userManager.FindByIdAsync(Input.UserId.ToString());
+
+            var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA_Reg:{user.Id}", code,
+                              TimeSpan.FromMinutes(int.Parse(configuration["OtpExpiryTimeInMins"])));
+
+            if (dbResult)
+            {
+                StatusMessage = "verification code resent.";
+                logger.LogInformation("Confirm account otp: {code}", code);
+
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    messagingService.SendOtp(user.Email, user.FirstName, code);
+                }
+
+                if (!string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    messagingService.SendSMS2faNotice(user.PhoneNumber, code);
+                }
+            }
+
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+            Input.UserId = userId;
             return Page();
         }
 
