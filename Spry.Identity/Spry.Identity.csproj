@@ -45,6 +45,7 @@
 
   <ItemGroup>
     <Folder Include="Infrastructure\Identity\" />
+    <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
 </Project>

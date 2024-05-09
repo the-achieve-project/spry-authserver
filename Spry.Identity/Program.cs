@@ -24,6 +24,7 @@ namespace Spry.Identity
                 return ConnectionMultiplexer.Connect(cacheConnection!);
             });
 
+            builder.WebHost.UseStaticWebAssets();
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
             
             // Add services to the container.
