@@ -91,7 +91,7 @@ namespace Spry.Identity.Pages.Account
                     {
                         if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
                         {
-                            ModelState.AddModelError(string.Empty, "account not confirmed.");
+                            return RedirectToPage("./ConfirmAccount", new { ReturnUrl, user.Id });
                         }
                         else
                         {

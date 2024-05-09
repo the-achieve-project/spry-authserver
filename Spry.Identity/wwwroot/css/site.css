@@ -21,6 +21,27 @@ body {
     background: url("/images/gm-mobile.png") #fff repeat;
 }
 
+a {
+    color: #23B78D;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+    a:hover {
+        color: #12946f;
+        text-decoration: underline;
+    }
+
+.btn-primary {
+    background-color: #23B78D;
+    border: 1px solid #23B78D;
+}
+
+    .btn-primary:hover {
+        background-color: #12946f;
+        border: 1px solid #12946f;
+    }
+
 .footer{
     position: absolute;
     bottom: 0;
@@ -33,17 +54,28 @@ main {
     min-height: 100vh;
 }
 
+.form-check-input:checked {
+    background-color: #23B78D;
+    border-color: #23B78D;
+}
+
+.form-control:focus, .form-check-input:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+} 
+
 .card {
     border-radius: 16px;
     border: 1px solid #F5F5F5;
     background: #FFF;
-    padding: 24px;
+    padding: 24px 24px 15px 24px;
 }
 
 .card__layout {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .card__width {

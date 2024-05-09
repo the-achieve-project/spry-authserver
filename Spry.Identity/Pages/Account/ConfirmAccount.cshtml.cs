@@ -13,15 +13,6 @@ namespace Spry.Identity.Pages.Account
         public InputModel Input { get; set; } = new();
         public string ReturnUrl { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            public Guid UserId { get; set; }
-
-            [Required]
-            public string Code { get; set; }
-        }
-
         public void OnGet(Guid id, string returnUrl = null)
         {
             Input.UserId = id;
@@ -63,6 +54,15 @@ namespace Spry.Identity.Pages.Account
             }
 
             return Page();
+        }
+
+        public class InputModel
+        {
+            [Required]
+            public Guid UserId { get; set; }
+
+            [Required]
+            public string Code { get; set; }
         }
     }
 }
