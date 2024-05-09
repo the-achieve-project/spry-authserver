@@ -1,4 +1,5 @@
 using Spry.Identity.Models;
+using Spry.Identity.Services;
 using Spry.Identity.Utility;
 using Spry.Identity.Workers;
 using StackExchange.Redis;
@@ -12,7 +13,8 @@ namespace Spry.Identity.Pages.Account
         IConnectionMultiplexer redis,
         UserManager<User> userManager,
         ILogger<ForgotPasswordConfirmationModel> logger,
-        IConfiguration configuration) : PageModel
+        IConfiguration configuration,
+        MessagingService messagingService) : PageModel
     {
         readonly IDatabase redisDb = redis.GetDatabase();
 
@@ -90,7 +92,17 @@ namespace Spry.Identity.Pages.Account
             if (dbResult)
             {
                 StatusMessage = "verification code resent.";
-                logger.LogInformation("Confirm account otp: {0}", code);
+                logger.LogInformation("Confirm account otp: {code}", code);
+
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    messagingService.SendOtp(user.Email, user.FirstName, code);
+                }
+
+                if (!string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    messagingService.SendSMS2faNotice(user.PhoneNumber, code);
+                }
             }
 
             ReturnUrl = returnUrl ?? Url.Content("~/");

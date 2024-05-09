@@ -1,10 +1,7 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.WebUtilities;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 
 namespace Spry.Identity.Pages.Account
 {
