@@ -1,6 +1,4 @@
-using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
 using Spry.Identity.Services;
 using Spry.Identity.Models;
 using Spry.Identity.Workers;
@@ -51,7 +49,7 @@ namespace Spry.Identity.Pages.Account
             {
                 var code = OtpGenerator.Create();
 
-                var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA:{user.Id}", code,
+                var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA_Reg:{user.Id}", code,
                                   TimeSpan.FromMinutes(int.Parse(configuration["OtpExpiryTimeInMins"])));
 
                 if (!dbResult)

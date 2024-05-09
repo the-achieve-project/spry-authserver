@@ -1,17 +1,13 @@
-using Microsoft.AspNetCore;
-using OpenIddict.Abstractions;
 using Spry.Identity.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
-using System.Text.Encodings.Web;
 using System.Web;
-using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
     public class LoginModel(SignInManager<User> signInManager, 
-        ILogger<LoginModel> logger, IConfiguration configuration) : PageModel
+            ILogger<LoginModel> logger, IConfiguration configuration) : PageModel
     {
         [BindProperty]
         public InputModel Input { get; set; }
@@ -95,7 +91,7 @@ namespace Spry.Identity.Pages.Account
                     {
                         if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
                         {
-                            ModelState.AddModelError(string.Empty, "account not confirmed.");
+                            return RedirectToPage("./ConfirmAccount", new { ReturnUrl, user.Id });
                         }
                         else
                         {

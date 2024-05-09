@@ -98,6 +98,7 @@ namespace Spry.Identity.Controllers
                         new(OpenIddictConstants.Claims.Subject, dbUser!.AchieveId!),
                         new Claim("src", "oiddict").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
                         new Claim("is_migrated", "true").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
+                        new Claim("email", dbUser.Email!).SetDestinations(OpenIddictConstants.Destinations.IdentityToken),
                     };
 
             if (request.ClientId != ClientIds.AchieveApp)

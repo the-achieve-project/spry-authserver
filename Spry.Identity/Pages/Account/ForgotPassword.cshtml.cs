@@ -1,20 +1,20 @@
-using Microsoft.AspNetCore.WebUtilities;
 using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Text;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
-using Spry.Identity.Infrastructure.IntegrationEvents;
+using Spry.Identity.Workers;
+using StackExchange.Redis;
 
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class ForgotPasswordModel(UserManager<User> userManager, 
+    public class ForgotPasswordModel(UserManager<User> userManager,
+        IConnectionMultiplexer redis,
         ILogger<ForgotPasswordModel> logger, IConfiguration configuration,
         MessagingService messagingService) : PageModel
     {
         [BindProperty]
-        public InputModel Input { get; set; }
+        public InputModel Input { get; set; } = new();
+        public string ReturnUrl { get; set; }
 
         public class InputModel
         {
@@ -23,50 +23,49 @@ namespace Spry.Identity.Pages.Account
             public string Email { get; set; }
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public void OnGet(string returnUrl = null)
         {
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+        }
+
+        public async Task<IActionResult> OnPostAsync(string returnUrl = null)
+        {
+            ReturnUrl = returnUrl ?? Url.Content("~/");
+
             if (ModelState.IsValid)
             {
                 var user = await userManager.FindByEmailAsync(Input.Email);
                 if (user == null || !(await userManager.IsEmailConfirmedAsync(user)))
                 {
                     // Don't reveal that the user does not exist or is not confirmed
-                    return RedirectToPage("./ForgotPasswordConfirmation");
+                    return RedirectToPage("./ForgotPasswordConfirmation", new { ReturnUrl });
                 }
 
-                // For more information on how to enable account confirmation and password reset please
-                // visit https://go.microsoft.com/fwlink/?LinkID=532713
-                var code = await userManager.GeneratePasswordResetTokenAsync(user);
-                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                var callbackUrl = Url.Page("/Account/ResetPassword", pageHandler: null, values: new { code }, protocol: Request.Scheme);
+                var code = OtpGenerator.Create();
 
-                logger.LogInformation("Reset link {callbackUrl}", HtmlEncoder.Default.Encode(callbackUrl!));
+                var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA_FP:{user.Id}", code,
+                                  TimeSpan.FromMinutes(int.Parse(configuration["OtpExpiryTimeInMins"])));
 
-                var mail = new MailInfo
+                if (!dbResult)
                 {
-                    RxEmail = user.Email,
-                    RxName = user.FirstName,
-                    EmailTemplate = configuration["EmailTemplates:ResetPassword"],
-                    EmailTemplateLocale = configuration["EmailTemplates:ResetPassword"],
-                    Content = new
-                    {
-                        first_name = user.FirstName,
-                        reset_url = callbackUrl
-                    }
-                };
-
-                messagingService.SendMail(mail);
-
-                //ToDo: url shortner for sms
-                if (false && !string.IsNullOrEmpty(user.PhoneNumber))
-                {
-                    var message = $"Hello {user.FirstName}, \nClick the link to reset your password" +
-                    $"\n\n{callbackUrl}";
-
-                    messagingService.SendSms(new Sms_Task { Text = message, To = user.PhoneNumber });
+                    logger.LogError("failed to generate verification code");
+                    ModelState.AddModelError(string.Empty, "An error occured. Try again");
+                    return Page();
                 }
 
-                return RedirectToPage("./ForgotPasswordConfirmation");
+                logger.LogInformation("Confirm account otp: {code}", code);
+
+                if (!string.IsNullOrEmpty(user.Email))
+                {
+                    messagingService.SendOtp(user.Email, user.FirstName, code);
+                }
+
+                if (!string.IsNullOrEmpty(user.PhoneNumber))
+                {
+                    messagingService.SendSMS2faNotice(user.PhoneNumber, code);
+                }
+
+                return RedirectToPage("./ForgotPasswordConfirmation", new { ReturnUrl, user.Id });
             }
 
             return Page();

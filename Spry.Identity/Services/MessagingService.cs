@@ -1,9 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Spry.BuildingBlocks.EventBus.Abstractions;
 using Spry.Identity.Infrastructure.IntegrationEvents;
-using System.Dynamic;
-using System.Text;
 
 namespace Spry.Identity.Services
 {
@@ -12,6 +9,43 @@ namespace Spry.Identity.Services
         IConfiguration configuration,
         ILogger<MessagingService> logger)
     {
+
+        public void SendPasswordResetSuccess(string email, string firstName)
+        {
+            var mail = new MailInfo
+            {
+                RxEmail = email,
+                RxName = firstName,
+                EmailTemplate = configuration["EmailTemplates:PasswordChanged"],
+                EmailTemplateLocale = configuration["EmailTemplates:PasswordChanged"],
+                Content = new
+                {
+                    first_name = firstName,
+                }
+            };
+
+            SendMail(mail);
+        }
+        
+        public void SendOtp(string email, string firstName, string code)
+        {
+            var mail = new MailInfo
+            {
+                RxEmail = email,
+                RxName = firstName,
+                EmailTemplate = configuration["EmailTemplates:2fa"],
+                EmailTemplateLocale = configuration["EmailTemplates:2fa"],
+                Content = new
+                {
+                    first_name = firstName,
+                    code
+                }
+            };
+
+            SendMail(mail);
+        }
+
+
         public void SendMail(MailInfo info,
             CopiedMailInfo copiedMailInfo = null)
         {

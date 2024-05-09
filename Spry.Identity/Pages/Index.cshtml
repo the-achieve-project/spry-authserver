@@ -8,10 +8,10 @@
 }
 
 <div class="text-center">
-    @if (User.Identity.IsAuthenticated)
+    @if (User.Identity!.IsAuthenticated)
     {
         var authenticationResult = await HttpContext.AuthenticateAsync();
-        var issued = authenticationResult.Properties.Items[".issued"];
+        var issued = authenticationResult.Properties!.Items[".issued"];
         var expires = authenticationResult.Properties.Items[".expires"];
         <div>
             <p>You are signed in as</p>

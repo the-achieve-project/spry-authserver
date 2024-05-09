@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using Spry.Identity.Models;
 using Spry.Identity.Utility;
@@ -15,14 +13,6 @@ namespace Spry.Identity.Pages.Account
         public InputModel Input { get; set; } = new();
         public string ReturnUrl { get; set; }
 
-        public class InputModel
-        {
-            public Guid UserId { get; set; }
-
-            [Required]
-            public string Code { get; set; }
-        }
-
         public void OnGet(Guid id, string returnUrl = null)
         {
             Input.UserId = id;
@@ -33,11 +23,11 @@ namespace Spry.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
 
             if (ModelState.IsValid)
             {
-                var record = await redis.GetDatabase().StringGetAsync($"2FA:{Input.UserId}");
+                var record = await redis.GetDatabase().StringGetAsync($"2FA_Reg:{Input.UserId}");
 
                 if (!record.HasValue)
                 {
@@ -60,11 +50,19 @@ namespace Spry.Identity.Pages.Account
                     }
                 }
 
-                return LocalRedirect(returnUrl);
+                return LocalRedirect(ReturnUrl);
             }
 
-            ReturnUrl = returnUrl;
             return Page();
+        }
+
+        public class InputModel
+        {
+            [Required]
+            public Guid UserId { get; set; }
+
+            [Required]
+            public string Code { get; set; }
         }
     }
 }

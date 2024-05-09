@@ -24,6 +24,7 @@ namespace Spry.Identity
                 return ConnectionMultiplexer.Connect(cacheConnection!);
             });
 
+            builder.WebHost.UseStaticWebAssets();
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
             
             // Add services to the container.
@@ -102,6 +103,11 @@ namespace Spry.Identity
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            //app.UseCookiePolicy(new CookiePolicyOptions
+            //{
+            //    Secure = CookieSecurePolicy.Always
+            //});
 
             app.UseAuthentication();
             app.UseAuthorization();
