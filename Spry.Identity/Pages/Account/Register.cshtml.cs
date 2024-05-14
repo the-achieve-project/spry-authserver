@@ -14,6 +14,8 @@ namespace Spry.Identity.Pages.Account
     public class RegisterModel : PageModel
     {
         #region fields
+        readonly IDatabase _redisDb;
+
         readonly SignInManager<User> _signInManager;
         readonly UserManager<User> _userManager;
         readonly IUserStore<User> _userStore;
@@ -21,7 +23,6 @@ namespace Spry.Identity.Pages.Account
         readonly ILogger<RegisterModel> _logger;
         readonly MessagingService _messagingService;
         readonly IConfiguration _configuration;
-        readonly IConnectionMultiplexer _redis;
 
         public RegisterModel(
             UserManager<User> userManager,
@@ -39,7 +40,7 @@ namespace Spry.Identity.Pages.Account
             _logger = logger;
             _messagingService = messagingService;
             _configuration = configuration;
-            _redis = redis;
+            _redisDb = redis.GetDatabase();
         }
         #endregion
 
@@ -50,38 +51,6 @@ namespace Spry.Identity.Pages.Account
 
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required]
-            [Display(Name = "First name")]
-            public string FirstName { get; set; }
-
-            [Required]
-            [Display(Name = "Last name")]
-            public string LastName { get; set; }
-            
-            //[Required]
-            [Display(Name = "Phone")]
-            public string PhoneNumber { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-        }
-
-
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
@@ -90,7 +59,7 @@ namespace Spry.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
@@ -114,18 +83,17 @@ namespace Spry.Identity.Pages.Account
                     {
                         var code = OtpGenerator.Create();
 
-                        var dbResult = await _redis.GetDatabase().StringSetAsync($"2FA_Reg:{user.Id}", code,
+                        var regCodeIsSaved = await _redisDb.StringSetAsync($"2FA_Reg:{user.Id}", $"{code}+{Input.Password}",
                                           TimeSpan.FromMinutes(int.Parse(_configuration["OtpExpiryTimeInMins"])));
 
-                        if (!dbResult)
+                        if (!regCodeIsSaved)
                         {
                             _logger.LogError("failed to generate verification code");
                             ModelState.AddModelError(string.Empty, "An error occured. Try again");
-                            ReturnUrl = returnUrl;
                             return Page();
                         }
 
-                        _logger.LogInformation("Confirm account otp: {0}", code);
+                        _logger.LogInformation("Confirm account otp: {code}", code);
 
                         _messagingService.SendOtp(user.Email, user.FirstName, code);
 
@@ -134,7 +102,7 @@ namespace Spry.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
-                        return LocalRedirect(returnUrl);
+                        return LocalRedirect(ReturnUrl);
                     }
                 }
                 foreach (var error in result.Errors)
@@ -144,22 +112,7 @@ namespace Spry.Identity.Pages.Account
             }
 
             // If we got this far, something failed, redisplay form
-            ReturnUrl = returnUrl;
             return Page();
-        }
-
-        private User CreateUser()
-        {
-            try
-            {
-                return Activator.CreateInstance<User>();
-            }
-            catch
-            {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(User)}'. " +
-                    $"Ensure that '{nameof(User)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
-            }
         }
 
         private IUserEmailStore<User> GetEmailStore()
@@ -170,6 +123,37 @@ namespace Spry.Identity.Pages.Account
             }
             return (IUserEmailStore<User>)_userStore;
         }
-    }
 
+        public class InputModel
+        {
+            [Required]
+            [EmailAddress]
+            [Display(Name = "Email")]
+            public string Email { get; set; }
+
+            [Required]
+            [Display(Name = "First name")]
+            public string FirstName { get; set; }
+
+            [Required]
+            [Display(Name = "Last name")]
+            public string LastName { get; set; }
+
+            //[Required]
+            [Display(Name = "Phone")]
+            public string PhoneNumber { get; set; }
+
+            [Required]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [DataType(DataType.Password)]
+            [Display(Name = "Password")]
+            public string Password { get; set; }
+
+            [DataType(DataType.Password)]
+            [Display(Name = "Confirm password")]
+            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            public string ConfirmPassword { get; set; }
+        }
+
+    }
 }
