@@ -9,10 +9,12 @@ using System.ComponentModel.DataAnnotations;
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class ConfirmAccountModel(IConnectionMultiplexer redis, 
-        UserManager<User> userManager, IConfiguration configuration,
+    public class ConfirmAccountModel(IConnectionMultiplexer redis,
+        SignInManager<User> signInManager, IConfiguration configuration,
         ILogger<ConfirmAccountModel> logger, MessagingService messagingService) : PageModel
     {
+        readonly UserManager<User> _userManager = signInManager.UserManager;
+
         [BindProperty]
         public InputModel Input { get; set; } = new();
         public string ReturnUrl { get; set; }
@@ -31,39 +33,70 @@ namespace Spry.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var record = await redis.GetDatabase().StringGetAsync($"2FA_Reg:{Input.UserId}");
+                var codeRecord = await redis.GetDatabase().StringGetAsync($"2FA_Reg:{Input.UserId}");
 
-                if (!record.HasValue)
+                if (!codeRecord.HasValue)
                 {
                     ModelState.AddModelError(string.Empty, "Code has expired");
                     return Page();
                 }
 
-                if (record.ToString() == Input.Code)
+                if (codeRecord.ToString().Split("+")[0] == Input.Code)
                 {
-                    var user = await userManager.FindByIdAsync(Input.UserId.ToString());
+                    var user = await _userManager.FindByIdAsync(Input.UserId.ToString());
                     user.EmailConfirmed = true;
                     user.AchieveId = $"AI{new Hasher(user.SequenceId).Hash()}";
 
-                    var result = await userManager.UpdateAsync(user);
+                    var updateResult = await _userManager.UpdateAsync(user);
 
-                    if (!result.Succeeded)
+                    if (!updateResult.Succeeded)
                     {
                         ModelState.AddModelError(string.Empty, "confirmation failed. try again");
                         return Page();
                     }
-                }
 
-                return LocalRedirect(ReturnUrl);
+                    var signInResult = await signInManager.PasswordSignInAsync(user.Email, codeRecord.ToString().Split("+")[1], true, lockoutOnFailure: false);
+
+                    if (signInResult.Succeeded)
+                    {
+                        logger.LogInformation("User logged in.");
+                        return LocalRedirect(ReturnUrl);
+                    }
+                    if (signInResult.RequiresTwoFactor)
+                    {
+                        return RedirectToPage("./LoginWith2fa", new { ReturnUrl, RememberMe = true });
+                    }
+                    if (signInResult.IsLockedOut)
+                    {
+                        logger.LogWarning("User account locked out.");
+                        return RedirectToPage("./Lockout", new { ReturnUrl });
+                    }
+                    else
+                    {
+                        if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
+                        {
+                            ModelState.AddModelError(string.Empty, "account not confirmed.");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                        }
+
+                        ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+
+                        return Page();
+                    }
+                }
             }
 
             return Page();
         }
 
+        //ToDo: use JS to contact handler
         public async Task<IActionResult> OnPostResend(Guid userId, string returnUrl = null)
         {
             var code = OtpGenerator.Create();
-            var user = await userManager.FindByIdAsync(Input.UserId.ToString());
+            var user = await _userManager.FindByIdAsync(Input.UserId.ToString());
 
             var dbResult = await redis.GetDatabase(0).StringSetAsync($"2FA_Reg:{user.Id}", code,
                               TimeSpan.FromMinutes(int.Parse(configuration["OtpExpiryTimeInMins"])));
