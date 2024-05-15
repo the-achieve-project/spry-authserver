@@ -4,6 +4,7 @@ using static OpenIddict.Server.OpenIddictServerHandlers.Session;
 using System.Security.Cryptography.X509Certificates;
 using Spry.Identity.SeedWork;
 using OpenIddict.Server;
+using Spry.Identity.Infrastructure.AuthRequestEventHandlers;
 
 namespace Spry.Identity.Infrastructure
 {
@@ -42,7 +43,7 @@ namespace Spry.Identity.Infrastructure
                       options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
                       options.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
 
-                      //options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
+                      options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
 
                       options.ServerEventHandlers();
 
