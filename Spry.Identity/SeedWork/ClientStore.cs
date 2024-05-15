@@ -36,7 +36,9 @@ namespace Spry.Identity.SeedWork
                 {
                     ClientId = ClientIds.AchieveApp,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
+                    RedirectUris = 
+                    {
+                        new Uri("https://oauth.pstmn.io/v1/callback"),
                     },
                     Permissions =
                     {
@@ -57,14 +59,17 @@ namespace Spry.Identity.SeedWork
                     },
                 }, cancellationToken);
             }
-            
+
             if (await manager.FindByClientIdAsync(ClientIds.SpryAdmin, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
                     ClientId = ClientIds.SpryAdmin,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
+                    RedirectUris =
+                    {
+                        new Uri("https://oauth.pstmn.io/v1/callback"),
+                        new Uri("http://localhost:5200/signin-oidc2"),
                     },
                     Permissions =
                     {
@@ -85,21 +90,24 @@ namespace Spry.Identity.SeedWork
                         Permissions.Prefixes.Scope + "spry.payroll",
                         Permissions.Prefixes.Scope + "spry.id",
                         Permissions.Prefixes.Scope + "spry.company",
-                },
+                    },
                     Requirements =
                     {
                         Requirements.Features.ProofKeyForCodeExchange,
                     },
                 }, cancellationToken);
             }
-            
+
             if (await manager.FindByClientIdAsync(ClientIds.SpryEss, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
                     ClientId = ClientIds.SpryEss,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
+                    RedirectUris =
+                    {
+                        new Uri("https://oauth.pstmn.io/v1/callback"),
+                        new Uri("http://localhost:5201/signin-oidc2"),
                     },
                     Permissions =
                     {
@@ -127,14 +135,17 @@ namespace Spry.Identity.SeedWork
                     },
                 }, cancellationToken);
             }
-            
+
             if (await manager.FindByClientIdAsync(ClientIds.SpryIdsrv4, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
                     ClientId = ClientIds.SpryIdsrv4,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
+                    RedirectUris =
+                    {
+                        new Uri("https://oauth.pstmn.io/v1/callback"),
+                        new Uri("http://localhost:5101/signin-oidc2")
                     },
                     Permissions =
                     {

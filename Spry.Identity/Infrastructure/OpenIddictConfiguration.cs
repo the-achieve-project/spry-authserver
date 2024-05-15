@@ -4,7 +4,6 @@ using static OpenIddict.Server.OpenIddictServerHandlers.Session;
 using System.Security.Cryptography.X509Certificates;
 using Spry.Identity.SeedWork;
 using OpenIddict.Server;
-using Spry.Identity.Infrastructure.AuthRequestEventHandlers;
 
 namespace Spry.Identity.Infrastructure
 {
@@ -32,18 +31,6 @@ namespace Spry.Identity.Infrastructure
                   {
                       //options.EnableDegradedMode();
                       //options.DisableTokenStorage(); //for dev
-
-                      options.AddEventHandler<OpenIddictServerEvents.GenerateTokenContext>(b =>
-                      {
-                          b.UseSingletonHandler<ScopesAsArrayHandler>();
-                          // make sure this is executed before weird stuff is done with the scopes
-                          b.SetOrder(int.MinValue);
-                      });
-
-                      options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
-                      options.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
-
-                      options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
 
                       options.ServerEventHandlers();
 

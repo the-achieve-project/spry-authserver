@@ -1,5 +1,6 @@
 ﻿using OpenIddict.Abstractions;
 using OpenIddict.Server;
+using Spry.Identity.SeedWork;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
 namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
@@ -25,16 +26,63 @@ namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
 
         public CustomValidateClientRedirectUri(IOpenIddictApplicationManager applicationManager)
         {
-            _applicationManager = applicationManager ?? throw new ArgumentNullException("applicationManager");
+            _applicationManager = applicationManager ?? throw new ArgumentNullException(nameof(applicationManager));
         }
 
         public async ValueTask HandleAsync(OpenIddictServerEvents.ValidateAuthorizationRequestContext context)
         {
-            if (context == null)
+            ArgumentNullException.ThrowIfNull(context);
+
+            var requestRedirectUrl = new Uri(context.Request.RedirectUri!);
+
+            if (requestRedirectUrl.Host.Contains("host.docker.internal"))
             {
-                //throw new ArgumentNullException("context");
+                return;
+            }
+
+            string[] achievePayrollClients = [ClientIds.SpryAdmin, ClientIds.SpryEss];
+
+            if (achievePayrollClients.Contains(context.Request.ClientId) && context.Request.AcrValues is not null)
+            {
+                var tenant = context.Request.AcrValues.Split(":")[1];
+
+                if (!requestRedirectUrl.IsWellFormedOriginalString())
+                {
+                    context.Reject("malformed redirect uri");
+                    return;
+                }
+
+                var validRedirectUrls = await _applicationManager.GetRedirectUrisAsync((await _applicationManager.FindByClientIdAsync(context.Request.ClientId!))!);
+
+                bool requestUrlIsValid = validRedirectUrls.Contains($"{requestRedirectUrl.Scheme}://{requestRedirectUrl.OriginalString!.Split(".")[1]}");
+
+                if (requestUrlIsValid)
+                {
+                    //check if tenant matches tenant in redirectUrl
+                    if (!requestRedirectUrl!.Host.Contains(tenant))
+                    {
+                        context.Reject("invalid_request", OpenIddictResources.FormatID2043("redirect_uri"), OpenIddictResources.FormatID8000("ID2043"));
+                    }
+
+                    return;
+                }
+
+                context.Reject("invalid_request", OpenIddictResources.FormatID2043("redirect_uri"), OpenIddictResources.FormatID8000("ID2043"));
+            }
+            else if (achievePayrollClients.Contains(context.Request.ClientId) && context.Request.AcrValues is null)
+            {
+                context.Reject("acr_values parameter must contain tenant");
+            }
+            else
+            {
+                var validRedirectUrls = await _applicationManager.GetRedirectUrisAsync((await _applicationManager.FindByClientIdAsync(context.Request.ClientId!))!);
+                bool requestUrlIsValid = validRedirectUrls.Contains(context.RedirectUri!);
+
+                if (!requestUrlIsValid)
+                {
+                    context.Reject("invalid_request", OpenIddictResources.FormatID2043("redirect_uri"), OpenIddictResources.FormatID8000("ID2043"));
+                }
             }
         }
     }
-
 }
