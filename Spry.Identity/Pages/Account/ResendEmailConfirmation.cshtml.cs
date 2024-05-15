@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Spry.Identity.Services;
 using Spry.Identity.Models;
-using Spry.Identity.Workers;
 using StackExchange.Redis;
+using Spry.Identity.Utility;
 
 namespace Spry.Identity.Pages.Account
 {

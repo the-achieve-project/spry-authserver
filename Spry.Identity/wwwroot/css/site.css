@@ -1,20 +1,20 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
@@ -52,12 +52,18 @@ a {
         border: 1px solid #12946f;
     }
 
-.footer{
+.footer {
     position: absolute;
     bottom: 0;
     width: 100%;
     white-space: nowrap;
-    line-height: 60px;
+    line-height: 30px;
+    background: #f4f4f4e0;
+    font-size: 10px;
+}
+
+.mt-12 {
+    margin-top: 12px;
 }
 
 main {
@@ -72,7 +78,7 @@ main {
 .form-control:focus, .form-check-input:focus {
     border-color: #28a745;
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-} 
+}
 
 .card {
     border-radius: 16px;
@@ -98,9 +104,6 @@ main {
     background: #F5F5F5 !important;
 }
 
-.signUp {
-}
-
 .signUp__header__container {
     display: flex;
     flex-direction: column;
@@ -110,10 +113,10 @@ main {
 
 
 .signUp__header {
+    text-align: center;
     color: #000;
     /* h4/bold */
-    font-family: "Libre Franklin";
-    font-size: 20px;
+    font-size: 18px;
     font-style: normal;
     font-weight: 700;
     line-height: 26px;
@@ -130,3 +133,46 @@ label .form-info-p {
     line-height: 23px;
     /* 153.333% */
 }
+
+.alternate_signin_container {
+    width: 100%;
+}
+
+    .alternate_signin_container .or-separator {
+        display: -webkit-box;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        padding: 0 4px;
+    }
+
+.alternate_signin_container_span {
+    font-size: 12px;
+}
+
+.alternate_signin_container .or-separator::after, .alternate_signin_container .or-separator::before {
+    content: "";
+    width: 50%;
+    height: 1px;
+    background-color: rgba(0,0,0,0.15);
+}
+
+.alternate_signin_container .or-separator .or-text {
+    font-size: 1rem;
+    line-height: 1.42857;
+    font-weight: 400;
+    color: rgba(0,0,0,0.6);
+    margin: 0 12px;
+}
+
+.alternate_signin_container button {
+    background-color: #F5F5F5;
+}
+
+    .alternate_signin_container button:hover {
+        background-color: rgb(228, 228, 228);
+    }

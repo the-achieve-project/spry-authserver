@@ -1,6 +1,4 @@
-﻿using Spry.Identity.Utility;
-
-namespace Spry.Identity.Workers
+﻿namespace Spry.Identity.Utility
 {
     public static class OtpGenerator
     {

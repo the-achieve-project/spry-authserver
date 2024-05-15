@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
-using Spry.Identity.Workers;
+using Spry.Identity.Utility;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 using System.Text;

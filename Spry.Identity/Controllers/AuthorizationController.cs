@@ -94,8 +94,8 @@ namespace Spry.Identity.Controllers
             var claims = new List<Claim>
                     {
                         // 'subject' claim which is required
-                        //new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
-                        new(OpenIddictConstants.Claims.Subject, dbUser!.AchieveId!),
+                        new(OpenIddictConstants.Claims.Subject, user.GetClaim(ClaimTypes.NameIdentifier)!),
+                        //new(OpenIddictConstants.Claims.Subject, dbUser!.AchieveId!),
                         new Claim("src", "oiddict").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
                         new Claim("is_migrated", "true").SetDestinations(OpenIddictConstants.Destinations.AccessToken),
                         new Claim("email", dbUser.Email!).SetDestinations(OpenIddictConstants.Destinations.IdentityToken),

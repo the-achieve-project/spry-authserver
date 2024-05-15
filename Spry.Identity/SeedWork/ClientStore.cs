@@ -9,11 +9,11 @@ namespace Spry.Identity.SeedWork
         {
             var manager = serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-            if (await manager.FindByClientIdAsync("m2m", cancellationToken) is null)
+            if (await manager.FindByClientIdAsync(ClientIds.M2M, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "m2m",
+                    ClientId = ClientIds.M2M,
                     ClientSecret = "946B62D0-DEF9-3215-A99D-46E6B8DAB342",
                     DisplayName = "m2m",
                     Permissions =
@@ -30,11 +30,11 @@ namespace Spry.Identity.SeedWork
                 }, cancellationToken);
             }
 
-            if (await manager.FindByClientIdAsync("achieve_app", cancellationToken) is null)
+            if (await manager.FindByClientIdAsync(ClientIds.AchieveApp, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "achieve_app",
+                    ClientId = ClientIds.AchieveApp,
                     ClientType = ClientTypes.Public,
                     RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
                     },
@@ -58,11 +58,11 @@ namespace Spry.Identity.SeedWork
                 }, cancellationToken);
             }
             
-            if (await manager.FindByClientIdAsync("spry.admin", cancellationToken) is null)
+            if (await manager.FindByClientIdAsync(ClientIds.SpryAdmin, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "spry.admin",
+                    ClientId = ClientIds.SpryAdmin,
                     ClientType = ClientTypes.Public,
                     RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
                     },
@@ -93,11 +93,11 @@ namespace Spry.Identity.SeedWork
                 }, cancellationToken);
             }
             
-            if (await manager.FindByClientIdAsync("spry.ess", cancellationToken) is null)
+            if (await manager.FindByClientIdAsync(ClientIds.SpryEss, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "spry.ess",
+                    ClientId = ClientIds.SpryEss,
                     ClientType = ClientTypes.Public,
                     RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
                     },
@@ -128,11 +128,11 @@ namespace Spry.Identity.SeedWork
                 }, cancellationToken);
             }
             
-            if (await manager.FindByClientIdAsync("spry.idsrv4", cancellationToken) is null)
+            if (await manager.FindByClientIdAsync(ClientIds.SpryIdsrv4, cancellationToken) is null)
             {
                 await manager.CreateAsync(new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "spry.idsrv4",
+                    ClientId = ClientIds.SpryIdsrv4,
                     ClientType = ClientTypes.Public,
                     RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
                     },
@@ -168,7 +168,8 @@ namespace Spry.Identity.SeedWork
     public static class ClientIds
     {
         public const string SpryEss = "spry.ess";
-        public const string SpryWeb = "spry.admin";
+        public const string SpryAdmin = "spry.admin";
+        public const string SpryIdsrv4 = "spry.idsrv4";
         public const string AchieveApp = "achieve_app";
         public const string M2M = "m2m";
     }

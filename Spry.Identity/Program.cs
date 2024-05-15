@@ -1,6 +1,4 @@
-using Autofac.Core;
 using Autofac.Extensions.DependencyInjection;
-using Autofac;
 using Microsoft.EntityFrameworkCore;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
@@ -8,15 +6,16 @@ using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
 using StackExchange.Redis;
-using System.Configuration;
 
 namespace Spry.Identity
 {
     public class Program
     {
         public static void Main(string[] args)
-        {          
+        {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+            var configuration = builder.Configuration;
 
             Lazy<ConnectionMultiplexer> _lazyRedis = new(() =>
             {
@@ -24,16 +23,30 @@ namespace Spry.Identity
                 return ConnectionMultiplexer.Connect(cacheConnection!);
             });
 
-            builder.WebHost.UseStaticWebAssets();
+            //builder.WebHost.UseStaticWebAssets();
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
-            
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme);
+                            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+                            .AddGoogle(options =>
+                            {
+                                var googleAuthOptions = configuration.GetSection("GoogleAuthentication").Get<GoogleAuthenticationOptions>()!;
+
+                                options.ClientId = googleAuthOptions.Client_Id;
+                                options.ClientSecret = googleAuthOptions.Client_Secret;
+                            })
+                            .AddMicrosoftAccount(options =>
+                            {
+                                var microsoftAuth = configuration.GetSection("MicrosoftAuthentication").Get<MicrosoftAuthOptions>()!;
+
+                                options.ClientId = microsoftAuth.ClientId;
+                                options.ClientSecret = microsoftAuth.ClientSecret;
+                            });
 
             builder.Services.AddDbContext<IdentityDataContext>(options =>
             {

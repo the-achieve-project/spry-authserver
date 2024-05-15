@@ -1,7 +1,6 @@
 using Spry.Identity.Models;
 using Spry.Identity.Services;
 using Spry.Identity.Utility;
-using Spry.Identity.Workers;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
