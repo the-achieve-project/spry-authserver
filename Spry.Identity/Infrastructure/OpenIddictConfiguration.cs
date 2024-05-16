@@ -32,18 +32,6 @@ namespace Spry.Identity.Infrastructure
                       //options.EnableDegradedMode();
                       //options.DisableTokenStorage(); //for dev
 
-                      options.AddEventHandler<OpenIddictServerEvents.GenerateTokenContext>(b =>
-                      {
-                          b.UseSingletonHandler<ScopesAsArrayHandler>();
-                          // make sure this is executed before weird stuff is done with the scopes
-                          b.SetOrder(int.MinValue);
-                      });
-
-                      options.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
-                      options.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
-
-                      //options.AddEventHandler(CustomValidateClientRedirectUri.Descriptor);
-
                       options.ServerEventHandlers();
 
                       options.AllowClientCredentialsFlow()

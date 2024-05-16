@@ -25,6 +25,7 @@ namespace Spry.Identity.Pages.Account
             ReturnUrl = returnUrl ?? Url.Content("~/");
 
             //dont allow in case page was reloaded or this page was hit directly
+            //because it should always be passed from previous page
             if (string.IsNullOrEmpty(Code))
             {
                 return RedirectToPage("./ForgotPassword", new { ReturnUrl });

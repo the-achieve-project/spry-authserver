@@ -1,21 +1,27 @@
 ﻿using OpenIddict.Abstractions;
+using Spry.Identity.Utility;
+using System.Text.Json;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Spry.Identity.SeedWork
 {
-    public static class ClientStore
+    public static class ClientApplications
     {
-        public static async Task GenerateClients(IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
+        static readonly ClientDto[] _clientConfiguration;
+        static ClientApplications()
         {
-            var manager = serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
+            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), $"SeedWork/files/clients{"." + AppVariables.CurrentEnvironment}.json"));
+            _clientConfiguration = JsonSerializer.Deserialize<ClientDto[]>(config, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
+        }
 
-            if (await manager.FindByClientIdAsync("m2m", cancellationToken) is null)
+        public static OpenIddictApplicationDescriptor M2m
+        {
+            get
             {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                return new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "m2m",
-                    ClientSecret = "946B62D0-DEF9-3215-A99D-46E6B8DAB342",
-                    DisplayName = "m2m",
+                    ClientId = ClientIds.M2M,
+                    ClientSecret = _clientConfiguration.GetClient(ClientIds.M2M).ClientSecret,
                     Permissions =
                     {
                         Permissions.Endpoints.Token,
@@ -27,17 +33,18 @@ namespace Spry.Identity.SeedWork
                         Permissions.Prefixes.Scope + "spry.id",
                         Permissions.Prefixes.Scope + "spry.company",
                     }
-                }, cancellationToken);
+                };
             }
+        }
 
-            if (await manager.FindByClientIdAsync("achieve_app", cancellationToken) is null)
+        public static OpenIddictApplicationDescriptor AcheiveApp
+        {
+            get
             {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                var descriptor = new OpenIddictApplicationDescriptor
                 {
-                    ClientId = "achieve_app",
+                    ClientId = ClientIds.AchieveApp,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
-                    },
                     Permissions =
                     {
                         Permissions.Endpoints.Authorization,
@@ -55,17 +62,31 @@ namespace Spry.Identity.SeedWork
                     {
                         Requirements.Features.ProofKeyForCodeExchange,
                     },
-                }, cancellationToken);
-            }
-            
-            if (await manager.FindByClientIdAsync("spry.admin", cancellationToken) is null)
-            {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                };
+
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.AchieveApp))
                 {
-                    ClientId = "spry.admin",
+                    descriptor.RedirectUris.Add(uri);
+                }
+                
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.AchieveApp))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
+                }
+
+                return descriptor;
+            }
+        }
+
+
+        public static OpenIddictApplicationDescriptor AdminApp
+        {
+            get
+            {
+                var descriptor = new OpenIddictApplicationDescriptor
+                {
+                    ClientId = ClientIds.SpryAdmin,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
-                    },
                     Permissions =
                     {
                         Permissions.Endpoints.Authorization,
@@ -85,22 +106,35 @@ namespace Spry.Identity.SeedWork
                         Permissions.Prefixes.Scope + "spry.payroll",
                         Permissions.Prefixes.Scope + "spry.id",
                         Permissions.Prefixes.Scope + "spry.company",
-                },
+                    },
                     Requirements =
                     {
                         Requirements.Features.ProofKeyForCodeExchange,
                     },
-                }, cancellationToken);
-            }
-            
-            if (await manager.FindByClientIdAsync("spry.ess", cancellationToken) is null)
-            {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                };
+
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.SpryAdmin))
                 {
-                    ClientId = "spry.ess",
+                    descriptor.RedirectUris.Add(uri);
+                }
+
+
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.SpryAdmin))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
+                }
+                return descriptor;
+            }
+        }
+
+        public static OpenIddictApplicationDescriptor EssApp
+        {
+            get
+            {
+                var descriptor = new OpenIddictApplicationDescriptor
+                {
+                    ClientId = ClientIds.SpryEss,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
-                    },
                     Permissions =
                     {
                         Permissions.Endpoints.Authorization,
@@ -125,17 +159,31 @@ namespace Spry.Identity.SeedWork
                     {
                         Requirements.Features.ProofKeyForCodeExchange,
                     },
-                }, cancellationToken);
-            }
-            
-            if (await manager.FindByClientIdAsync("spry.idsrv4", cancellationToken) is null)
-            {
-                await manager.CreateAsync(new OpenIddictApplicationDescriptor
+                };
+
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.SpryEss))
                 {
-                    ClientId = "spry.idsrv4",
+                    descriptor.RedirectUris.Add(uri);
+                }
+
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.SpryEss))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
+                }
+
+                return descriptor;
+            }
+        }
+
+
+        public static OpenIddictApplicationDescriptor Idsr4App
+        {
+            get
+            {
+                var descriptor = new OpenIddictApplicationDescriptor
+                {
+                    ClientId = ClientIds.SpryIdsrv4,
                     ClientType = ClientTypes.Public,
-                    RedirectUris = { new Uri("https://oauth.pstmn.io/v1/callback") ,
-                    },
                     Permissions =
                     {
                         Permissions.Endpoints.Authorization,
@@ -160,7 +208,19 @@ namespace Spry.Identity.SeedWork
                     {
                         Requirements.Features.ProofKeyForCodeExchange,
                     },
-                }, cancellationToken);
+                };
+
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.SpryIdsrv4))
+                {
+                    descriptor.RedirectUris.Add(uri);
+                }
+
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.SpryIdsrv4))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
+                }
+
+                return descriptor;
             }
         }
     }
@@ -168,8 +228,46 @@ namespace Spry.Identity.SeedWork
     public static class ClientIds
     {
         public const string SpryEss = "spry.ess";
-        public const string SpryWeb = "spry.admin";
+        public const string SpryAdmin = "spry.admin";
+        public const string SpryIdsrv4 = "spry.idsrv4";
         public const string AchieveApp = "achieve_app";
         public const string M2M = "m2m";
+    }
+
+#nullable disable
+    public class ClientDto
+    {
+        public string Id { get; set; }
+        public string[] RedirectUris { get; set; }
+        public string[] PostLogoutRedirectUris { get; set; }
+        public string ClientSecret { get; set; }
+
+        public HashSet<Uri> GetRedirectUris()
+        {
+            return RedirectUris.Select(r => new Uri(r)).ToHashSet();
+        }
+        
+        public HashSet<Uri> GetPostLogoutRedirectUris()
+        {
+            return PostLogoutRedirectUris.Select(r => new Uri(r)).ToHashSet();
+        }
+    }
+
+    public static class ClientStoreExtensions
+    {
+        public static ClientDto GetClient(this ClientDto[] clients, string clientId)
+        {
+            return clients.First(c => c.Id == clientId);
+        }
+
+        public static HashSet<Uri> GetRedirectUris(this ClientDto[] clients, string clientId)
+        {
+            return clients.First(c => c.Id == clientId).GetRedirectUris();
+        }
+        
+        public static HashSet<Uri> GetPostLogoutRedirectUris(this ClientDto[] clients, string clientId)
+        {
+            return clients.First(c => c.Id == clientId).GetPostLogoutRedirectUris();
+        }
     }
 }

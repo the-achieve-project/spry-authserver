@@ -1,0 +1,47 @@
+[
+  {
+    "id": "m2m",
+    "clientSecret": "946B62D0-DEF9-3215-A99D-46E6B8DAB342"
+  },
+  {
+    "id": "spry.admin",
+    "redirectUris": [
+      "https://oauth.pstmn.io/v1/callback",
+      "http://localhost:5200/signin-oidc2"
+    ],
+    "postLogoutRedirectUris": [
+      "http://localhost:5101/Account/select/",
+      "http://id.achievepayroll/Account/select/",
+      "http://id.ourwages/Account/select/"
+    ]
+  },
+  {
+    "id": "spry.ess",
+    "redirectUris": [
+      "https://oauth.pstmn.io/v1/callback",
+      "http://localhost:5201/signin-oidc2"
+    ],
+    "postLogoutRedirectUris": [
+      "http://localhost:5101/Account/select/",
+      "http://id.achievepayroll/Account/select/",
+      "http://id.ourwages/Account/select/"
+    ]
+  },
+  {
+    "id": "spry.idsrv4",
+    "redirectUris": [
+      "https://oauth.pstmn.io/v1/callback",
+      "http://localhost:5101/signin-oidc2"
+    ],
+    "postLogoutRedirectUris": [
+    ]
+  },
+  {
+    "id": "achieve_app",
+    "redirectUris": [
+      "https://oauth.pstmn.io/v1/callback"
+    ],
+    "postLogoutRedirectUris": [
+    ]
+  }
+]

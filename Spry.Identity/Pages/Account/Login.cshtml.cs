@@ -56,6 +56,7 @@ namespace Spry.Identity.Pages.Account
             return Page();
         }
 
+        //todo: rewrite to provide better specific error feedback
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl ?? Url.Content("~/");
@@ -93,10 +94,6 @@ namespace Spry.Identity.Pages.Account
                         {
                             return RedirectToPage("./ConfirmAccount", new { ReturnUrl, user.Id });
                         }
-                        else
-                        {
-                            ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                        }
                     }
 
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");
@@ -121,7 +118,7 @@ namespace Spry.Identity.Pages.Account
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
-        public bool RememberMe { get; set; }
+        [Display(Name = "Keep me logged in")]
+        public bool RememberMe { get; set; } = true;
     }
 }
