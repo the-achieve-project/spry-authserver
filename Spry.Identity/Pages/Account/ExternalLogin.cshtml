@@ -17,7 +17,8 @@
     <form class="signUp w-100" id="account" asp-page-handler="Confirmation" asp-route-returnUrl="@Model.ReturnUrl" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
         <div class="form-floating mb-3">
-            <input asp-for="Input.Email" class="form-control ach__input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <input asp-for="Input.Email" class="form-control ach__input" disabled readonly
+            autocomplete="username" aria-required="true" placeholder="name@example.com" />
             <label asp-for="Input.Email" class="form-label"></label>
             <span asp-validation-for="Input.Email" class="text-danger"></span>
         </div>
