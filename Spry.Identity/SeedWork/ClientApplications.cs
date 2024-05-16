@@ -10,7 +10,7 @@ namespace Spry.Identity.SeedWork
         static readonly ClientDto[] _clientConfiguration;
         static ClientApplications()
         {
-            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), $"SeedWork/files/clients.{AppVariables.CurrentEnvironment}.json"));
+            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), $"SeedWork/files/clients{"." + AppVariables.CurrentEnvironment}.json"));
             _clientConfiguration = JsonSerializer.Deserialize<ClientDto[]>(config, new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
         }
 
@@ -64,9 +64,14 @@ namespace Spry.Identity.SeedWork
                     },
                 };
 
-                foreach (var uri in _clientConfiguration.GetClientUris(ClientIds.AchieveApp))
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.AchieveApp))
                 {
                     descriptor.RedirectUris.Add(uri);
+                }
+                
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.AchieveApp))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
                 }
 
                 return descriptor;
@@ -108,11 +113,16 @@ namespace Spry.Identity.SeedWork
                     },
                 };
 
-                foreach (var uri in _clientConfiguration.GetClientUris(ClientIds.SpryAdmin))
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.SpryAdmin))
                 {
                     descriptor.RedirectUris.Add(uri);
                 }
 
+
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.SpryAdmin))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
+                }
                 return descriptor;
             }
         }
@@ -151,9 +161,14 @@ namespace Spry.Identity.SeedWork
                     },
                 };
 
-                foreach (var uri in _clientConfiguration.GetClientUris(ClientIds.SpryEss))
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.SpryEss))
                 {
                     descriptor.RedirectUris.Add(uri);
+                }
+
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.SpryEss))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
                 }
 
                 return descriptor;
@@ -195,9 +210,14 @@ namespace Spry.Identity.SeedWork
                     },
                 };
 
-                foreach (var uri in _clientConfiguration.GetClientUris(ClientIds.SpryIdsrv4))
+                foreach (var uri in _clientConfiguration.GetRedirectUris(ClientIds.SpryIdsrv4))
                 {
                     descriptor.RedirectUris.Add(uri);
+                }
+
+                foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.SpryIdsrv4))
+                {
+                    descriptor.PostLogoutRedirectUris.Add(uri);
                 }
 
                 return descriptor;
@@ -219,10 +239,17 @@ namespace Spry.Identity.SeedWork
     {
         public string Id { get; set; }
         public string[] RedirectUris { get; set; }
+        public string[] PostLogoutRedirectUris { get; set; }
         public string ClientSecret { get; set; }
-        public HashSet<Uri> GetUris()
+
+        public HashSet<Uri> GetRedirectUris()
         {
             return RedirectUris.Select(r => new Uri(r)).ToHashSet();
+        }
+        
+        public HashSet<Uri> GetPostLogoutRedirectUris()
+        {
+            return PostLogoutRedirectUris.Select(r => new Uri(r)).ToHashSet();
         }
     }
 
@@ -233,9 +260,14 @@ namespace Spry.Identity.SeedWork
             return clients.First(c => c.Id == clientId);
         }
 
-        public static HashSet<Uri> GetClientUris(this ClientDto[] clients, string clientId)
+        public static HashSet<Uri> GetRedirectUris(this ClientDto[] clients, string clientId)
         {
-            return clients.First(c => c.Id == clientId).GetUris();
+            return clients.First(c => c.Id == clientId).GetRedirectUris();
+        }
+        
+        public static HashSet<Uri> GetPostLogoutRedirectUris(this ClientDto[] clients, string clientId)
+        {
+            return clients.First(c => c.Id == clientId).GetPostLogoutRedirectUris();
         }
     }
 }

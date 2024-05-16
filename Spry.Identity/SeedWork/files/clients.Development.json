@@ -8,6 +8,11 @@
     "redirectUris": [
       "https://oauth.pstmn.io/v1/callback",
       "http://localhost:5200/signin-oidc2"
+    ],
+    "postLogoutRedirectUris": [
+      "http://localhost:5101/Account/select/",
+      "http://id.achievepayroll/Account/select/",
+      "http://id.ourwages/Account/select/"
     ]
   },
   {
@@ -15,6 +20,11 @@
     "redirectUris": [
       "https://oauth.pstmn.io/v1/callback",
       "http://localhost:5201/signin-oidc2"
+    ],
+    "postLogoutRedirectUris": [
+      "http://localhost:5101/Account/select/",
+      "http://id.achievepayroll/Account/select/",
+      "http://id.ourwages/Account/select/"
     ]
   },
   {
@@ -22,12 +32,17 @@
     "redirectUris": [
       "https://oauth.pstmn.io/v1/callback",
       "http://localhost:5101/signin-oidc2"
+    ],
+    "postLogoutRedirectUris": [
+      "http://localhost:5101/Account/select/"
     ]
   },
   {
     "id": "achieve_app",
     "redirectUris": [
       "https://oauth.pstmn.io/v1/callback"
+    ],
+    "postLogoutRedirectUris": [
     ]
   }
 ]
