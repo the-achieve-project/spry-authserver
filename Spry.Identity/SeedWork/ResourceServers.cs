@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using OpenIddict.Abstractions;
+﻿using OpenIddict.Abstractions;
 using System.Text.Json;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
@@ -12,7 +11,7 @@ namespace Spry.Identity.SeedWork
         {
             var manager = serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
 
-            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "SeedWork/resources.json"));
+            var config = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "SeedWork/files/resources.json"));
 
             var resources = JsonSerializer.Deserialize<ApiResource[]>(config);
 

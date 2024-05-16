@@ -12,7 +12,7 @@ namespace Spry.Identity.Workers
             var context = scope.ServiceProvider.GetRequiredService<IdentityDataContext>();
             await context.Database.EnsureCreatedAsync(cancellationToken);
 
-            await ClientStore.GenerateClients(scope.ServiceProvider, cancellationToken);
+            await ClientGenerator.GenerateClients(scope.ServiceProvider, cancellationToken);
             await ResourceServers.GenerateResourceServers(scope.ServiceProvider, cancellationToken);  
             await Scopes.GenerateScopes(scope.ServiceProvider, cancellationToken);
         }

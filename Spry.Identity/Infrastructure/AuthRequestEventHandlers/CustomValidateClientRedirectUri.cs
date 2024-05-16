@@ -7,8 +7,8 @@ namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
 {
     public sealed class CustomValidateClientRedirectUri : IOpenIddictServerHandler<OpenIddictServerEvents.ValidateAuthorizationRequestContext>
     {
-        private readonly IOpenIddictApplicationManager _applicationManager;
-
+        readonly IOpenIddictApplicationManager _applicationManager;
+        readonly IConfiguration _configuration;
         //
         // Summary:
         //     Gets the default descriptor definition assigned to this handler.
@@ -24,8 +24,9 @@ namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
             throw new InvalidOperationException(OpenIddictResources.GetResourceString("ID0016"));
         }
 
-        public CustomValidateClientRedirectUri(IOpenIddictApplicationManager applicationManager)
+        public CustomValidateClientRedirectUri(IOpenIddictApplicationManager applicationManager, IConfiguration configuration)
         {
+            _configuration = configuration;
             _applicationManager = applicationManager ?? throw new ArgumentNullException(nameof(applicationManager));
         }
 
@@ -40,7 +41,7 @@ namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
                 return;
             }
 
-            string[] achievePayrollClients = [ClientIds.SpryAdmin, ClientIds.SpryEss];
+            string[] achievePayrollClients = _configuration.GetSection("IdentityServer:PayrollClients").Get<string[]>()!;
 
             if (achievePayrollClients.Contains(context.Request.ClientId) && context.Request.AcrValues is not null)
             {
