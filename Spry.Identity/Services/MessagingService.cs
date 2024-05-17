@@ -10,6 +10,33 @@ namespace Spry.Identity.Services
         ILogger<MessagingService> logger)
     {
 
+        public void SendNewLoginNotice(string email)
+        {
+            var mail = new MailInfo
+            {
+                RxEmail = email,
+                EmailTemplate = configuration["EmailTemplates:NewLoginNotice"],
+                EmailTemplateLocale = configuration["EmailTemplates:NewLoginNotice"],
+                Content = new
+                {
+                    email,
+                }
+            };
+
+            SendMail(mail);
+        }
+
+        public void SendSMSNewLoginNotice(string phone, string userAgent)
+        {
+            eventBus.PublishTask(new Sms_Task
+            {
+                //From = _configuration["DefaultSmsHeader"], // set in messaging service
+                To = phone,
+                Text = $"Security alert.\n We noticed a new sign-in to your achieve account, {phone} on a {userAgent} device. \n " +
+                $"If this was use ignore this message. If not visit your account to reset password."
+            });
+        }
+
         public void SendPasswordResetSuccess(string email, string firstName)
         {
             var mail = new MailInfo
@@ -127,7 +154,7 @@ namespace Spry.Identity.Services
                 To = phone,
                 Text = $"Use verification code {code} for Achieve authencation."
             });
-        }
+        } 
     }
 
     #region classes
