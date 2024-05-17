@@ -1,7 +1,6 @@
 ﻿using Spry.Identity.Data;
 using Spry.Identity.Models;
 using Spry.Identity.SeedWork;
-using System.Configuration;
 
 namespace Spry.Identity.Infrastructure.Identity
 {
@@ -13,21 +12,21 @@ namespace Spry.Identity.Infrastructure.Identity
             .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddGoogle(options =>
             {
-                var googleAuthOptions = builder.Configuration.GetSection("GoogleAuthentication").Get<GoogleAuthenticationOptions>()!;
+                var googleAuthOptions = builder.Configuration.GetSection(GoogleAuthenticationOptions.GoogleAuthentication).Get<GoogleAuthenticationOptions>()!;
 
                 options.ClientId = googleAuthOptions.Client_Id;
                 options.ClientSecret = googleAuthOptions.Client_Secret;
             })
             .AddMicrosoftAccount(options =>
             {
-                var microsoftAuth = builder.Configuration.GetSection("MicrosoftAuthentication").Get<MicrosoftAuthOptions>()!;
+                var microsoftAuth = builder.Configuration.GetSection(MicrosoftAuthOptions.MicrosoftAuthentication).Get<MicrosoftAuthOptions>()!;
 
                 options.ClientId = microsoftAuth.ClientId;
                 options.ClientSecret = microsoftAuth.ClientSecret;
             })
             .AddYahoo(options =>
             {
-                var yahooAuth = builder.Configuration.GetSection("YahooAuthentication").Get<YahooAuthOptions>()!;
+                var yahooAuth = builder.Configuration.GetSection(YahooAuthOptions.YahooAuthentication).Get<YahooAuthOptions>()!;
 
                 options.ClientId = yahooAuth.ClientId;
                 options.ClientSecret = yahooAuth.ClientSecret;

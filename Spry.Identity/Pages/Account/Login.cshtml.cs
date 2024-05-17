@@ -124,7 +124,7 @@ namespace Spry.Identity.Pages.Account
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        [Display(Name = "Keep me logged in")]
+        [Display(Name = "Stay signed in")]
         public bool RememberMe { get; set; } = true;
     }
 }

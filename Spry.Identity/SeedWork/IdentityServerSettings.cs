@@ -12,6 +12,7 @@
 
     public class GoogleAuthenticationOptions
     {
+        public const string GoogleAuthentication = "GoogleAuthentication";
         public string Client_Id { get; set; }
         public string Client_Secret { get; set; }
         public string Project_Id { get; set; }
@@ -24,12 +25,14 @@
 
     public class MicrosoftAuthOptions
     {
+        public const string MicrosoftAuthentication = "MicrosoftAuthentication";
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
     }
 
     public class YahooAuthOptions : MicrosoftAuthOptions
     {
+        public const string YahooAuthentication = "YahooAuthentication";
         public string Authority { get; set; }
         public string CallbackPath { get; set; }
         public string ResponseType { get; set; }
