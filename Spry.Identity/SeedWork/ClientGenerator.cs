@@ -1,9 +1,4 @@
 ﻿using OpenIddict.Abstractions;
-using OpenIddict.Core;
-using OpenIddict.EntityFrameworkCore.Models;
-using Spry.Identity.Utility;
-using System.Text.Json;
-using static OpenIddict.Abstractions.OpenIddictConstants;
 
 namespace Spry.Identity.SeedWork
 {
