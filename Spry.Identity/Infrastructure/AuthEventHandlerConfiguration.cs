@@ -7,10 +7,14 @@ namespace Spry.Identity.Infrastructure
 {
     public static class AuthEventHandlerConfiguration
     {
-        public static OpenIddictServerBuilder ServerEventHandlers(this OpenIddictServerBuilder builder)
+        public static OpenIddictServerBuilder ServerEventHandlers(this OpenIddictServerBuilder builder, IConfiguration configuration)
         {
             builder.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
-            //builder.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
+
+            if (configuration.GetValue<bool>("DisablePostLogoutRedirectUriValidation"))
+            {
+                builder.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
+            }
 
             builder.AddEventHandler<GenerateTokenContext>(b =>
             {
