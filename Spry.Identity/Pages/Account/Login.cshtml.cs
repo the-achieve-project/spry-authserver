@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Identity;
 using Spry.Identity.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
@@ -21,7 +22,7 @@ namespace Spry.Identity.Pages.Account
 
         private static readonly string[] payrollClients = ["spry.admin", "spry.ess"];
 
-        //ToDo: check if already logged in
+        //ToDo: redirect to "home page" if request is not openIdConnect
         public async Task<IActionResult> OnGetAsync(string returnUrl = null)
         {
             if (User.Identity!.IsAuthenticated)
@@ -56,7 +57,6 @@ namespace Spry.Identity.Pages.Account
             return Page();
         }
 
-        //todo: rewrite to provide better specific error feedback
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl ?? Url.Content("~/");
@@ -67,38 +67,44 @@ namespace Spry.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
+                var user = await signInManager.UserManager.FindByNameAsync(Input.Email);
 
-                SignInResult result = await signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                if (user is not null)
+                {
+                    var hasPassword = await signInManager.UserManager.CheckPasswordAsync(user, Input.Password);
 
-                if (result.Succeeded)
-                {
-                    logger.LogInformation("User logged in.");
-                    return LocalRedirect(ReturnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToPage("./LoginWith2fa", new { ReturnUrl, Input.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    logger.LogWarning("User account locked out.");
-                    return RedirectToPage("./Lockout");
-                }
-                else
-                {
-                    var user = await signInManager.UserManager.FindByEmailAsync(Input.Email);
-
-                    if (user != null)
+                    if (hasPassword)
                     {
                         if (!await signInManager.UserManager.IsEmailConfirmedAsync(user))
                         {
                             return RedirectToPage("./ConfirmAccount", new { ReturnUrl, user.Id });
                         }
+
+                        SignInResult result = await signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+
+                        if (result.Succeeded)
+                        {
+                            logger.LogInformation("User logged in.");
+                            return LocalRedirect(ReturnUrl);
+                        }
+                        if (result.RequiresTwoFactor)
+                        {
+                            return RedirectToPage("./LoginWith2fa", new { ReturnUrl, Input.RememberMe });
+                        }
+                        if (result.IsLockedOut)
+                        {
+                            logger.LogWarning("User account locked out.");
+                            return RedirectToPage("./Lockout");
+                        }
                     }
-
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-
-                    return Page();
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "invalid password.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "invalid email.");
                 }
             }
 
