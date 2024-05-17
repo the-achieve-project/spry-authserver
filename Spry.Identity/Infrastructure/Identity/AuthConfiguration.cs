@@ -24,6 +24,13 @@ namespace Spry.Identity.Infrastructure.Identity
 
                 options.ClientId = microsoftAuth.ClientId;
                 options.ClientSecret = microsoftAuth.ClientSecret;
+            })
+            .AddYahoo(options =>
+            {
+                var yahooAuth = builder.Configuration.GetSection("YahooAuthentication").Get<YahooAuthOptions>()!;
+
+                options.ClientId = yahooAuth.ClientId;
+                options.ClientSecret = yahooAuth.ClientSecret;
             });
 
             builder.Services.AddIdentity<User, UserRole>()
