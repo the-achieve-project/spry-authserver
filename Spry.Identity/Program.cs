@@ -2,10 +2,8 @@ using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Spry.Identity.Data;
 using Spry.Identity.Infrastructure;
-using Spry.Identity.Models;
+using Spry.Identity.Infrastructure.Identity;
 using Spry.Identity.SeedWork;
-using Spry.Identity.Services;
-using StackExchange.Redis;
 
 namespace Spry.Identity
 {
@@ -15,13 +13,7 @@ namespace Spry.Identity
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            var configuration = builder.Configuration;
-
-            Lazy<ConnectionMultiplexer> _lazyRedis = new(() =>
-            {
-                var cacheConnection = builder.Configuration.GetConnectionString("SpryRedisStore");
-                return ConnectionMultiplexer.Connect(cacheConnection!);
-            });
+            var configuration = builder.Configuration;      
 
             //builder.WebHost.UseStaticWebAssets();
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
@@ -30,23 +22,6 @@ namespace Spry.Identity
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
             builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
-
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddGoogle(options =>
-                            {
-                                var googleAuthOptions = configuration.GetSection("GoogleAuthentication").Get<GoogleAuthenticationOptions>()!;
-
-                                options.ClientId = googleAuthOptions.Client_Id;
-                                options.ClientSecret = googleAuthOptions.Client_Secret;
-                            })
-                            .AddMicrosoftAccount(options =>
-                            {
-                                var microsoftAuth = configuration.GetSection("MicrosoftAuthentication").Get<MicrosoftAuthOptions>()!;
-
-                                options.ClientId = microsoftAuth.ClientId;
-                                options.ClientSecret = microsoftAuth.ClientSecret;
-                            });
 
             builder.Services.AddDbContext<IdentityDataContext>(options =>
             {
@@ -60,36 +35,12 @@ namespace Spry.Identity
                 options.UseOpenIddict<Guid>();
             });
 
-            builder.Services.AddIdentity<User, UserRole>()
-                           .AddEntityFrameworkStores<IdentityDataContext>()
-                           .AddDefaultTokenProviders();
-
-            builder.Services.ConfigureApplicationCookie(options =>
-            {
-                options.Cookie.HttpOnly = true;
-                options.ExpireTimeSpan = TimeSpan.FromDays(90); //subject to change
-                options.SlidingExpiration = true;
-            });
-
-            builder.Services.Configure<IdentityOptions>(options =>
-            {
-                options.SignIn.RequireConfirmedAccount = true;
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 6;
-                options.Password.RequireLowercase = false;
-                options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.User.RequireUniqueEmail = true;
-            });
-
-            builder.Services.AddSingleton<IConnectionMultiplexer>(_lazyRedis.Value);
-            builder.Services.AddScoped<AccountService>();
-            builder.Services.AddScoped<MessagingService>();
+            builder.Services.AddAuthenticationConfiguration(builder);
 
             builder.Services.AddOpenIddictConfiguration(builder);
             builder.Services.AddEventBusConfiguration(builder.Configuration);
 
-            builder.Services.AddHostedService<Workers.Seeder>();
+            builder.Services.AddApplicationServiceConfiguration(builder);
 
             var app = builder.Build();
 
