@@ -11,8 +11,8 @@
     ],
     "postLogoutRedirectUris": [
       "http://localhost:5101/Account/select/",
-      "http://id.achievepayroll/Account/select/",
-      "http://id.ourwages/Account/select/"
+      "http://id.achievepayroll.com/Account/select/",
+      "http://id.ourwages.com/Account/select/"
     ]
   },
   {
@@ -23,8 +23,8 @@
     ],
     "postLogoutRedirectUris": [
       "http://localhost:5101/Account/select/",
-      "http://id.achievepayroll/Account/select/",
-      "http://id.ourwages/Account/select/"
+      "http://id.achievepayroll.com/Account/select/",
+      "http://id.ourwages.com/Account/select/"
     ]
   },
   {
@@ -34,7 +34,6 @@
       "http://localhost:5101/signin-oidc2"
     ],
     "postLogoutRedirectUris": [
-      "http://localhost:5101/Account/select/"
     ]
   },
   {

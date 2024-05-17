@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using OpenIddict.Abstractions;
-using OpenIddict.Server;
-using Spry.Identity.Infrastructure.AuthRequestEventHandlers;
-using static OpenIddict.Abstractions.OpenIddictConstants;
+﻿using Spry.Identity.Infrastructure.AuthRequestEventHandlers;
 using static OpenIddict.Server.OpenIddictServerEvents;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 using static OpenIddict.Server.OpenIddictServerHandlers.Session;
@@ -11,10 +7,14 @@ namespace Spry.Identity.Infrastructure
 {
     public static class AuthEventHandlerConfiguration
     {
-        public static OpenIddictServerBuilder ServerEventHandlers(this OpenIddictServerBuilder builder)
+        public static OpenIddictServerBuilder ServerEventHandlers(this OpenIddictServerBuilder builder, IConfiguration configuration)
         {
             builder.RemoveEventHandler(ValidateClientRedirectUri.Descriptor);
-            builder.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
+
+            if (configuration.GetValue<bool>("DisablePostLogoutRedirectUriValidation"))
+            {
+                builder.RemoveEventHandler(ValidateClientPostLogoutRedirectUri.Descriptor);
+            }
 
             builder.AddEventHandler<GenerateTokenContext>(b =>
             {

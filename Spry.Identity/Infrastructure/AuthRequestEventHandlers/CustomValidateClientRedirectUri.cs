@@ -34,14 +34,10 @@ namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
         {
             ArgumentNullException.ThrowIfNull(context);
 
-            if (_configuration.GetValue<bool>("DisableRedirectUriValidation"))
-            {
-                return;
-            }
-
             var requestRedirectUrl = new Uri(context.Request.RedirectUri!);
 
-            if (requestRedirectUrl.Host.Contains("host.docker.internal"))
+            if (_configuration.GetValue<bool>("DisableRedirectUriValidation") 
+                || requestRedirectUrl.Host.Contains("host.docker.internal"))
             {
                 return;
             }

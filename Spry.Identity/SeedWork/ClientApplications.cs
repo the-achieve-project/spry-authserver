@@ -49,6 +49,7 @@ namespace Spry.Identity.SeedWork
                     {
                         Permissions.Endpoints.Authorization,
                         Permissions.Endpoints.Token,
+                        Permissions.Endpoints.Logout,
 
                         Permissions.GrantTypes.AuthorizationCode,
                         Permissions.GrantTypes.RefreshToken,
@@ -68,7 +69,7 @@ namespace Spry.Identity.SeedWork
                 {
                     descriptor.RedirectUris.Add(uri);
                 }
-                
+
                 foreach (var uri in _clientConfiguration.GetPostLogoutRedirectUris(ClientIds.AchieveApp))
                 {
                     descriptor.PostLogoutRedirectUris.Add(uri);
@@ -91,6 +92,7 @@ namespace Spry.Identity.SeedWork
                     {
                         Permissions.Endpoints.Authorization,
                         Permissions.Endpoints.Token,
+                        Permissions.Endpoints.Logout,
 
                         Permissions.GrantTypes.AuthorizationCode,
                         Permissions.GrantTypes.RefreshToken,
@@ -139,6 +141,7 @@ namespace Spry.Identity.SeedWork
                     {
                         Permissions.Endpoints.Authorization,
                         Permissions.Endpoints.Token,
+                        Permissions.Endpoints.Logout,
 
                         Permissions.GrantTypes.AuthorizationCode,
                         Permissions.GrantTypes.ClientCredentials,
@@ -188,6 +191,7 @@ namespace Spry.Identity.SeedWork
                     {
                         Permissions.Endpoints.Authorization,
                         Permissions.Endpoints.Token,
+                        Permissions.Endpoints.Logout,
 
                         Permissions.GrantTypes.AuthorizationCode,
                         Permissions.GrantTypes.ClientCredentials,
@@ -246,7 +250,7 @@ namespace Spry.Identity.SeedWork
         {
             return RedirectUris.Select(r => new Uri(r)).ToHashSet();
         }
-        
+
         public HashSet<Uri> GetPostLogoutRedirectUris()
         {
             return PostLogoutRedirectUris.Select(r => new Uri(r)).ToHashSet();
@@ -264,7 +268,7 @@ namespace Spry.Identity.SeedWork
         {
             return clients.First(c => c.Id == clientId).GetRedirectUris();
         }
-        
+
         public static HashSet<Uri> GetPostLogoutRedirectUris(this ClientDto[] clients, string clientId)
         {
             return clients.First(c => c.Id == clientId).GetPostLogoutRedirectUris();
