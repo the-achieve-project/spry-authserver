@@ -13,15 +13,12 @@ namespace Spry.Identity
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            var configuration = builder.Configuration;      
-
             //builder.WebHost.UseStaticWebAssets();
             builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
-            builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
 
             builder.Services.AddDbContext<IdentityDataContext>(options =>
             {
@@ -36,24 +33,13 @@ namespace Spry.Identity
             });
 
             builder.Services.AddAuthenticationConfiguration(builder);
-
             builder.Services.AddOpenIddictConfiguration(builder);
             builder.Services.AddEventBusConfiguration(builder.Configuration);
-
             builder.Services.AddApplicationServiceConfiguration(builder);
 
             var app = builder.Build();
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var logger = scope.ServiceProvider.GetService<ILogger<Program>>();
-
-                logger!.LogInformation("Migrating IdentityDataContext start");
-                var db = scope.ServiceProvider.GetRequiredService<IdentityDataContext>();
-
-                db.Database.Migrate();
-                logger!.LogInformation("Migrating IdentityDataContext end");
-            }
+            app.UseMigrations();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

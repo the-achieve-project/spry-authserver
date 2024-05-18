@@ -1,9 +1,6 @@
 ﻿using Spry.Identity.Data;
-using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
-using static OpenIddict.Server.OpenIddictServerHandlers.Session;
 using System.Security.Cryptography.X509Certificates;
 using Spry.Identity.SeedWork;
-using OpenIddict.Server;
 
 namespace Spry.Identity.Infrastructure
 {
