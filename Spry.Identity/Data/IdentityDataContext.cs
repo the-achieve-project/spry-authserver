@@ -9,6 +9,7 @@ namespace Spry.Identity.Data
     public class IdentityDataContext(DbContextOptions<IdentityDataContext> options) : IdentityDbContext<User, UserRole, Guid>(options)
     {
         public const string AIdSqlSequenceName = "AIdNumbers";
+        public DbSet<UserDeviceLogin> UserDeviceLogins { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

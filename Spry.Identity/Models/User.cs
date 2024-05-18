@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Collections.ObjectModel;
 using System.Numerics;
 
 namespace Spry.Identity.Models
@@ -10,6 +11,7 @@ namespace Spry.Identity.Models
         public required string FirstName { get; set; }
         public string? LastName { get; set; }
         public string? OtherNames { get; set; }
+        public IList<UserDeviceLogin> UserDeviceLogins { get; set; } = [];  
     }
 
     public class UserRole : IdentityRole<Guid>

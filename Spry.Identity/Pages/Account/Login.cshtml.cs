@@ -1,14 +1,20 @@
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Spry.Identity.Data;
 using Spry.Identity.Models;
+using Spry.Identity.Services;
+using Spry.Identity.Utility;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Web;
+using UAParser;
 
 namespace Spry.Identity.Pages.Account
 {
 #nullable disable
-    public class LoginModel(SignInManager<User> signInManager, 
-            ILogger<LoginModel> logger, IConfiguration configuration) : PageModel
+    public class LoginModel(SignInManager<User> signInManager,
+            ILogger<LoginModel> logger, IConfiguration configuration,
+            IdentityDataContext dbContext, MessagingService messagingService) : PageModel
     {
         [BindProperty]
         public InputModel Input { get; set; }
@@ -84,7 +90,9 @@ namespace Spry.Identity.Pages.Account
 
                         if (result.Succeeded)
                         {
+                            //note user device logins
                             logger.LogInformation("User logged in.");
+                            await LoginNotificationAsync(user);
                             return LocalRedirect(ReturnUrl);
                         }
                         if (result.RequiresTwoFactor)
@@ -110,6 +118,65 @@ namespace Spry.Identity.Pages.Account
 
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+
+
+        async Task LoginNotificationAsync(User user)
+        {
+            if (AppVariables.CurrentEnvironment == AppVariables.Development) // test in multiple devices first
+            {
+                var ua = HttpContext.Request.Headers.UserAgent;
+                var uaParser = Parser.GetDefault();
+                ClientInfo clientInfo = uaParser.Parse(ua);
+
+                string device;
+
+                if (clientInfo.Device.Family == "Other" && clientInfo.OS.Family.Equals("Windows", StringComparison.CurrentCultureIgnoreCase))
+                {
+                    device = clientInfo.OS.Family;
+                }
+                else
+                {
+                    device = clientInfo.Device.Family;
+                }
+
+                //dont send notice for first-time login
+                if (!await dbContext.UserDeviceLogins.AnyAsync(u => u.UserId == user.Id))
+                {
+                    await dbContext.UserDeviceLogins.AddAsync(new UserDeviceLogin
+                    {
+                        UserId = user.Id,
+                        Device = device,
+                        Request = ua
+                    });
+
+                    await dbContext.SaveChangesAsync();
+                }
+                else
+                {
+                    if (!await dbContext.UserDeviceLogins.AnyAsync(u => u.UserId == user.Id && u.Device == device ))
+                    {
+                        await dbContext.UserDeviceLogins.AddAsync(new UserDeviceLogin
+                        {
+                            UserId = user.Id,
+                            Device = device,
+                            Request = ua
+                        });
+
+                        await dbContext.SaveChangesAsync();
+
+                        if (!string.IsNullOrEmpty(user.Email))
+                        {
+                            messagingService.SendNewLoginNotice(user.Email, device);
+                        }
+
+                        if (!string.IsNullOrEmpty(device))
+                        {
+                            messagingService.SendSMSNewLoginNotice(user.PhoneNumber, device);
+                        }
+                    }
+                }
+            }
         }
     }
 
