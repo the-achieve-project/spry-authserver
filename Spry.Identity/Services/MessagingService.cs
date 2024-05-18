@@ -10,7 +10,7 @@ namespace Spry.Identity.Services
         ILogger<MessagingService> logger)
     {
 
-        public void SendNewLoginNotice(string email)
+        public void SendNewLoginNotice(string email, string userAgent)
         {
             var mail = new MailInfo
             {
@@ -20,6 +20,7 @@ namespace Spry.Identity.Services
                 Content = new
                 {
                     email,
+                    userAgent,
                 }
             };
 

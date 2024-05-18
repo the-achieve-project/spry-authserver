@@ -131,7 +131,7 @@ namespace Spry.Identity.Pages.Account
 
                 string device;
 
-                if (clientInfo.Device.Family == "Other" && clientInfo.Device.Family.Equals("Windows", StringComparison.CurrentCultureIgnoreCase))
+                if (clientInfo.Device.Family == "Other" && clientInfo.OS.Family.Equals("Windows", StringComparison.CurrentCultureIgnoreCase))
                 {
                     device = clientInfo.OS.Family;
                 }
@@ -141,7 +141,7 @@ namespace Spry.Identity.Pages.Account
                 }
 
                 //dont send notice for first-time login
-                if (await dbContext.UserDeviceLogins.AnyAsync(u => u.UserId == user.Id))
+                if (!await dbContext.UserDeviceLogins.AnyAsync(u => u.UserId == user.Id))
                 {
                     await dbContext.UserDeviceLogins.AddAsync(new UserDeviceLogin
                     {
@@ -167,7 +167,7 @@ namespace Spry.Identity.Pages.Account
 
                         if (!string.IsNullOrEmpty(user.Email))
                         {
-                            messagingService.SendNewLoginNotice(user.Email);
+                            messagingService.SendNewLoginNotice(user.Email, device);
                         }
 
                         if (!string.IsNullOrEmpty(device))
@@ -177,7 +177,6 @@ namespace Spry.Identity.Pages.Account
                     }
                 }
             }
-
         }
     }
 
