@@ -98,23 +98,12 @@ namespace Spry.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                //ToDo: what if the email has a local account already
-                var user = new User
+                //ToDo: what if the email has a local account already. just link it
+                User user = await userManager.FindByNameAsync(Input.Email);
+
+                if (user is not null)
                 {
-                    FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
-                    LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
-                    UserName = Input.Email,
-                    Email = Input.Email,
-                    EmailConfirmed = true
-                };
-
-                var result = await userManager.CreateAsync(user);
-
-                if (result.Succeeded)
-                {
-                    user.AchieveId = $"AI{new Hasher(user.SequenceId).Hash()}";
-
-                    result = await userManager.AddLoginAsync(user, info);
+                    var result = await userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
                         logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
@@ -122,11 +111,44 @@ namespace Spry.Identity.Pages.Account
                         await signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
                         return LocalRedirect(ReturnUrl);
                     }
-                }
 
-                foreach (var error in result.Errors)
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+                else
                 {
-                    ModelState.AddModelError(string.Empty, error.Description);
+                    user = new User
+                    {
+                        FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                        LastName = info.Principal.FindFirstValue(ClaimTypes.Surname),
+                        UserName = Input.Email,
+                        Email = Input.Email,
+                        EmailConfirmed = true
+                    };
+
+                    var result = await userManager.CreateAsync(user);
+
+                    if (result.Succeeded)
+                    {
+                        user.AchieveId = $"AI{new Hasher(user.SequenceId).Hash()}";
+
+                        result = await userManager.AddLoginAsync(user, info);
+                        if (result.Succeeded)
+                        {
+                            logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                            await signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                            return LocalRedirect(ReturnUrl);
+                        }
+                    }
+
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+
                 }
             }
 

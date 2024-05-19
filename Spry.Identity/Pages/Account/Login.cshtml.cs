@@ -165,7 +165,7 @@ namespace Spry.Identity.Pages.Account
 
                         await dbContext.SaveChangesAsync();
 
-                        string userAgent = device.Contains("Windows", StringComparison.OrdinalIgnoreCase) ? device.Split(' ')[0] : device;
+                        string userAgent = device.Contains("Windows", StringComparison.CurrentCultureIgnoreCase) ? device.Split(' ')[0] : device;
 
                         if (!string.IsNullOrEmpty(user.Email))
                         {
