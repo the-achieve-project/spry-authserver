@@ -1,3 +1,4 @@
+using OpenIddict.Abstractions;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
 using StackExchange.Redis;
@@ -9,7 +10,8 @@ namespace Spry.Identity.Pages.Account
     public class ResetPasswordModel(SignInManager<User> signInManager,
         ILogger<ResetPasswordModel> logger,
         MessagingService messagingService,
-        IConnectionMultiplexer redis) : PageModel
+        IConnectionMultiplexer redis, 
+        IOpenIddictTokenManager tokenManager) : PageModel
     {
         readonly IDatabase redisDb = redis.GetDatabase();
 
@@ -61,6 +63,14 @@ namespace Spry.Identity.Pages.Account
 
             if (resetResult.Succeeded)
             {
+                //ToDo: revoke tokens
+                var tokens = tokenManager.FindBySubjectAsync(user.AchieveId);
+
+                await foreach (var token in tokens)
+                {
+                    await tokenManager.TryRevokeAsync(token);
+                }
+
                 SignInResult result = await signInManager.PasswordSignInAsync(user.Email, Input.Password, true, lockoutOnFailure: false);
 
                 if (result.Succeeded)

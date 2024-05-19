@@ -30,6 +30,7 @@ namespace Spry.Identity.Infrastructure
                       //options.DisableTokenStorage(); //for dev
 
                       //options.SetIssuer(serverSettings.Issuer);
+
                       options.ServerEventHandlers(builder.Configuration);
 
                       options.AllowClientCredentialsFlow()
