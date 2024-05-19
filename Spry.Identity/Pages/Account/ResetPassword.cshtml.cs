@@ -63,12 +63,12 @@ namespace Spry.Identity.Pages.Account
 
             if (resetResult.Succeeded)
             {
-                //ToDo: revoke tokens
+                //revoke tokens
                 var tokens = tokenManager.FindBySubjectAsync(user.AchieveId);
 
                 await foreach (var token in tokens)
                 {
-                    await tokenManager.TryRevokeAsync(token);
+                    _ = await tokenManager.TryRevokeAsync(token);
                 }
 
                 SignInResult result = await signInManager.PasswordSignInAsync(user.Email, Input.Password, true, lockoutOnFailure: false);
