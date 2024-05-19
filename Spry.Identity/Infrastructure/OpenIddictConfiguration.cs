@@ -22,7 +22,7 @@ namespace Spry.Identity.Infrastructure
                               .UseDbContext<IdentityDataContext>()
                               .ReplaceDefaultEntities<Guid>();
 
-                      //options.UseQuartz();                      
+                      options.UseQuartz();                      
                   })
                   .AddServer(options =>
                   {
@@ -41,7 +41,8 @@ namespace Spry.Identity.Infrastructure
                               .SetTokenEndpointUris("/connect/token")
                               .SetUserinfoEndpointUris("/connect/userinfo")
                               .SetIntrospectionEndpointUris("/connect/introspect")
-                              .SetLogoutEndpointUris("/connect/endsession");
+                              .SetLogoutEndpointUris("/connect/endsession")
+                              .SetRevocationEndpointUris("/connect/revocation");
 
                       if (builder.Environment.IsDevelopment())
                       {

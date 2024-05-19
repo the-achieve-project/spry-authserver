@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Quartz;
 using Spry.Identity.Data;
 using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
@@ -16,6 +17,14 @@ namespace Spry.Identity.Infrastructure
                 return ConnectionMultiplexer.Connect(cacheConnection!);
             });
             builder.Services.Configure<IdentityServerSettings>(builder.Configuration.GetSection("IdentityServer"));
+
+            builder.Services.AddQuartz(options =>
+            {
+                options.UseSimpleTypeLoader();
+                options.UseInMemoryStore();
+            });
+
+            builder.Services.AddQuartzHostedService(options => options.WaitForJobsToComplete = true);
 
             builder.Services.AddSingleton<IConnectionMultiplexer>(_lazyRedis.Value);
             builder.Services.AddScoped<AccountService>();
