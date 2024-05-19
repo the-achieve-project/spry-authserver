@@ -42,18 +42,18 @@ namespace Spry.Identity.Pages.Account
 
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new { ReturnUrl });
             }
 
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new { ReturnUrl });
             }
 
             //LogUserInfo(info);
@@ -64,7 +64,7 @@ namespace Spry.Identity.Pages.Account
             if (result.Succeeded)
             {
                 logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
-                return LocalRedirect(returnUrl);
+                return LocalRedirect(ReturnUrl);
             }
             if (result.IsLockedOut)
             {
@@ -73,7 +73,6 @@ namespace Spry.Identity.Pages.Account
             else
             {
                 // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
@@ -88,17 +87,18 @@ namespace Spry.Identity.Pages.Account
 
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
         {
-            returnUrl ??= Url.Content("~/");
+            ReturnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
             ExternalLoginInfo info = await signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information during confirmation.";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new { ReturnUrl });
             }
 
             if (ModelState.IsValid)
             {
+                //ToDo: what if the email has a local account already
                 var user = new User
                 {
                     FirstName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
@@ -120,7 +120,7 @@ namespace Spry.Identity.Pages.Account
                         logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
                         await signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
-                        return LocalRedirect(returnUrl);
+                        return LocalRedirect(ReturnUrl);
                     }
                 }
 
@@ -131,7 +131,6 @@ namespace Spry.Identity.Pages.Account
             }
 
             ProviderDisplayName = info.ProviderDisplayName;
-            ReturnUrl = returnUrl;
             return Page();
         }
 

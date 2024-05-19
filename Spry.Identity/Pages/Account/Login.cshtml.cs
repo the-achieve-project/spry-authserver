@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Spry.Identity.Data;
 using Spry.Identity.Models;
@@ -90,8 +89,8 @@ namespace Spry.Identity.Pages.Account
 
                         if (result.Succeeded)
                         {
-                            //note user device logins
                             logger.LogInformation("User logged in.");
+
                             await LoginNotificationAsync(user);
                             return LocalRedirect(ReturnUrl);
                         }
@@ -133,7 +132,8 @@ namespace Spry.Identity.Pages.Account
 
                 if (clientInfo.Device.Family == "Other" && clientInfo.OS.Family.Equals("Windows", StringComparison.CurrentCultureIgnoreCase))
                 {
-                    device = clientInfo.OS.Family;
+                    //for windows take note of the OS version because usually the Device.Family is "Other"
+                    device = clientInfo.OS.ToString();
                 }
                 else
                 {
@@ -165,14 +165,16 @@ namespace Spry.Identity.Pages.Account
 
                         await dbContext.SaveChangesAsync();
 
+                        string userAgent = device.Contains("Windows", StringComparison.OrdinalIgnoreCase) ? device.Split(' ')[0] : device;
+
                         if (!string.IsNullOrEmpty(user.Email))
                         {
-                            messagingService.SendNewLoginNotice(user.Email, device);
+                            messagingService.SendNewLoginNotice(user.Email, userAgent);
                         }
 
-                        if (!string.IsNullOrEmpty(device))
+                        if (!string.IsNullOrEmpty(user.PhoneNumber))
                         {
-                            messagingService.SendSMSNewLoginNotice(user.PhoneNumber, device);
+                            messagingService.SendSMSNewLoginNotice(user.PhoneNumber, userAgent);
                         }
                     }
                 }
