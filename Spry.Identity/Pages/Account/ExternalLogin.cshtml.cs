@@ -2,6 +2,7 @@ using Spry.Identity.Models;
 using Spry.Identity.Utility;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace Spry.Identity.Pages.Account
 {
@@ -98,7 +99,6 @@ namespace Spry.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                //ToDo: what if the email has a local account already. just link it
                 User user = await userManager.FindByNameAsync(Input.Email);
 
                 if (user is not null)
@@ -148,7 +148,6 @@ namespace Spry.Identity.Pages.Account
                     {
                         ModelState.AddModelError(string.Empty, error.Description);
                     }
-
                 }
             }
 
@@ -158,10 +157,14 @@ namespace Spry.Identity.Pages.Account
 
         private void LogUserInfo(ExternalLoginInfo info)
         {
-            logger.LogInformation($"User info sub: {info.Principal.FindFirstValue(ClaimTypes.NameIdentifier)}");
-            logger.LogInformation($"User info name: {info.Principal.FindFirstValue(ClaimTypes.Name)}");
-            logger.LogInformation($"User info givenname: {info.Principal.FindFirstValue(ClaimTypes.GivenName)}");
-            logger.LogInformation($"User info surname: {info.Principal.FindFirstValue(ClaimTypes.Surname)}");
+            logger.LogInformation("User info sub: {userInfo}", JsonSerializer.Serialize(new
+            {
+                info.LoginProvider,
+                sub = info.Principal.FindFirstValue(ClaimTypes.NameIdentifier),
+                name = info.Principal.FindFirstValue(ClaimTypes.Name),
+                givenName = info.Principal.FindFirstValue(ClaimTypes.GivenName),
+                surname = info.Principal.FindFirstValue(ClaimTypes.Surname)
+            }));
         }
     }
 }
