@@ -12,7 +12,7 @@ services:
       context: ../Spry.Identity
       dockerfile: Spry.Identity/Dockerfile
     environment:
-     - IdentityServer__Issuer="http://host.docker.internal:5312"
+     - IdentityServer__Issuer=http://host.docker.internal:5312
      - DisableRedirectUriValidation=false
      - DisablePostLogoutRedirectUriValidation=false
      - EventBus__Connection=rabbitmq
