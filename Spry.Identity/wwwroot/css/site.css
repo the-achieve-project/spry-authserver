@@ -152,9 +152,9 @@ label .form-info-p {
 
 .alternate_signin_container_span {
     font-size: 15px;
-	color: #12946f;
-	font-size: 15px;
-	font-weight: 600;
+    color: #23B78D;
+    font-size: 15px;
+    font-weight: 600;
 }
 
 .alternate_signin_container .or-separator::after, .alternate_signin_container .or-separator::before {
