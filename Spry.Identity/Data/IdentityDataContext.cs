@@ -22,5 +22,12 @@ namespace Spry.Identity.Data
             base.OnModelCreating(builder);
             //builder.UseOpenIddict();
         }
+
+        protected async Task HandleAccountChange()
+        {
+            var accountEntry = ChangeTracker.Entries<User>();
+
+
+        }
     }
 }

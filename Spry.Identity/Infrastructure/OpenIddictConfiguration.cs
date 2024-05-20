@@ -26,11 +26,7 @@ namespace Spry.Identity.Infrastructure
                   })
                   .AddServer(options =>
                   {
-                      //options.EnableDegradedMode();
-                      //options.DisableTokenStorage(); //for dev
-
-                      //options.SetIssuer(serverSettings.Issuer);
-
+                      options.SetIssuer(serverSettings.Issuer);
                       options.ServerEventHandlers(builder.Configuration);
 
                       options.AllowClientCredentialsFlow()
@@ -39,11 +35,11 @@ namespace Spry.Identity.Infrastructure
                              .AllowRefreshTokenFlow();
 
                       options.SetAuthorizationEndpointUris("/connect/authorize")
-                              .SetTokenEndpointUris("/connect/token")
-                              .SetUserinfoEndpointUris("/connect/userinfo")
-                              .SetIntrospectionEndpointUris("/connect/introspect")
-                              .SetLogoutEndpointUris("/connect/endsession")
-                              .SetRevocationEndpointUris("/connect/revocation");
+                             .SetTokenEndpointUris("/connect/token")
+                             .SetUserinfoEndpointUris("/connect/userinfo")
+                             .SetIntrospectionEndpointUris("/connect/introspect")
+                             .SetLogoutEndpointUris("/connect/endsession")
+                             .SetRevocationEndpointUris("/connect/revocation");
 
                       if (builder.Environment.IsDevelopment())
                       {
