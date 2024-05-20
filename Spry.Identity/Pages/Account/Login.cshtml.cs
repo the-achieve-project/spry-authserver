@@ -122,7 +122,7 @@ namespace Spry.Identity.Pages.Account
 
         async Task LoginNotificationAsync(User user)
         {
-            if (AppVariables.CurrentEnvironment == AppVariables.Development) // test in multiple devices first
+            if (configuration.GetValue<bool>("EnableSecurityAlerts"))
             {
                 var ua = HttpContext.Request.Headers.UserAgent;
                 var uaParser = Parser.GetDefault();

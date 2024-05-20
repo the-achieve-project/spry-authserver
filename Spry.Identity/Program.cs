@@ -33,9 +33,9 @@ namespace Spry.Identity
             });
 
             builder.Services.AddAuthenticationConfiguration(builder);
+            builder.Services.AddApplicationServiceConfiguration(builder);
             builder.Services.AddOpenIddictConfiguration(builder);
             builder.Services.AddEventBusConfiguration(builder.Configuration);
-            builder.Services.AddApplicationServiceConfiguration(builder);
 
             var app = builder.Build();
 
