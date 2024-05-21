@@ -140,7 +140,8 @@ namespace Spry.Identity.Pages.Account
             public string PhoneNumber { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
+            [RegularExpression("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$", ErrorMessage = "At least one uppercase letter, one lowercase letter, one digit, one special character and a minimum of 8 characters is required"), MaxLength(256)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
