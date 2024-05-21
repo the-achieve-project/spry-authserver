@@ -1,6 +1,7 @@
 using OpenIddict.Abstractions;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
+using Spry.Identity.Utility;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
@@ -64,12 +65,7 @@ namespace Spry.Identity.Pages.Account
             if (resetResult.Succeeded)
             {
                 //revoke tokens
-                var tokens = tokenManager.FindBySubjectAsync(user.AchieveId);
-
-                await foreach (var token in tokens)
-                {
-                    _ = await tokenManager.TryRevokeAsync(token);
-                }
+                await tokenManager.RevokeTokensAsync(user.AchieveId);
 
                 SignInResult result = await signInManager.PasswordSignInAsync(user.Email, Input.Password, true, lockoutOnFailure: false);
 

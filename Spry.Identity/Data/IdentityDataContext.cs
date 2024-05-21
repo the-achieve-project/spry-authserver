@@ -26,16 +26,13 @@ namespace Spry.Identity.Data
             //builder.UseOpenIddict();
         }
 
-        public override int SaveChanges()
-        {
-            return base.SaveChanges();
-        }
-
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             //await HandleAccountChangeAsync(cancellationToken);
             return await base.SaveChangesAsync(cancellationToken);
         }
+
+
 
         //should i use this or revocation where properties are changed??
         protected async Task HandleAccountChangeAsync(CancellationToken cancellationToken = default)
