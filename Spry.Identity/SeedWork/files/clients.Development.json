@@ -40,12 +40,10 @@
       "http://id.ourwages.com/signin-oidc2"
     ],
     "postLogoutRedirectUris": [
-      [
         "http://id.achievepayroll.com/signout-callback-oidc",
         "http://id.ourwages.com/signout-callback-oidc",
         "http://localhost:5101/signout-callback-oidc",
         "http://host.docker.internal:5101/signout-callback-oidc"
-      ]
     ]
   },
   {

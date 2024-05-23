@@ -7,7 +7,6 @@ namespace Spry.Identity.SeedWork
         public static async Task GenerateClients(IServiceProvider serviceProvider, CancellationToken cancellationToken = default)
         {
             var manager = serviceProvider.GetRequiredService<IOpenIddictApplicationManager>();
-            var manager2 = serviceProvider.GetRequiredService<IOpenIddictTokenManager>();
 
             if (await manager.FindByClientIdAsync(ClientIds.M2M, cancellationToken) is null)
             {
