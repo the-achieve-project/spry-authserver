@@ -22,14 +22,11 @@ namespace Spry.Identity.Infrastructure
                               .UseDbContext<IdentityDataContext>()
                               .ReplaceDefaultEntities<Guid>();
 
-                      //options.UseQuartz();                      
+                      options.UseQuartz();                      
                   })
                   .AddServer(options =>
                   {
-                      //options.EnableDegradedMode();
-                      //options.DisableTokenStorage(); //for dev
-
-                      //options.SetIssuer(serverSettings.Issuer);
+                      options.SetIssuer(serverSettings.Issuer);
                       options.ServerEventHandlers(builder.Configuration);
 
                       options.AllowClientCredentialsFlow()
@@ -38,10 +35,11 @@ namespace Spry.Identity.Infrastructure
                              .AllowRefreshTokenFlow();
 
                       options.SetAuthorizationEndpointUris("/connect/authorize")
-                              .SetTokenEndpointUris("/connect/token")
-                              .SetUserinfoEndpointUris("/connect/userinfo")
-                              .SetIntrospectionEndpointUris("/connect/introspect")
-                              .SetLogoutEndpointUris("/connect/endsession");
+                             .SetTokenEndpointUris("/connect/token")
+                             .SetUserinfoEndpointUris("/connect/userinfo")
+                             .SetIntrospectionEndpointUris("/connect/introspect")
+                             .SetLogoutEndpointUris("/connect/endsession")
+                             .SetRevocationEndpointUris("/connect/revocation");
 
                       if (builder.Environment.IsDevelopment())
                       {

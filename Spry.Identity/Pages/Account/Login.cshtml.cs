@@ -122,7 +122,7 @@ namespace Spry.Identity.Pages.Account
 
         async Task LoginNotificationAsync(User user)
         {
-            if (AppVariables.CurrentEnvironment == AppVariables.Development) // test in multiple devices first
+            if (configuration.GetValue<bool>("EnableSecurityAlerts"))
             {
                 var ua = HttpContext.Request.Headers.UserAgent;
                 var uaParser = Parser.GetDefault();
@@ -190,6 +190,7 @@ namespace Spry.Identity.Pages.Account
         public string Email { get; set; }
 
         [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
