@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Spry.Identity.Data;
 using Spry.Identity.Models;
 using Spry.Identity.Services;
-using Spry.Identity.Utility;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Web;
@@ -14,7 +13,7 @@ namespace Spry.Identity.Pages.Account
     public class LoginModel(SignInManager<User> signInManager,
             ILogger<LoginModel> logger, IConfiguration configuration,
             IdentityDataContext dbContext, MessagingService messagingService) : PageModel
-    {
+    {    
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -190,7 +189,7 @@ namespace Spry.Identity.Pages.Account
         public string Email { get; set; }
 
         [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 8)]
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
