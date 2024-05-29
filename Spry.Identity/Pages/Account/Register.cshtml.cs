@@ -1,8 +1,13 @@
+using PhoneNumbers;
+using Spry.Identity.Application.Attributes;
+using Spry.Identity.Dtos.Common;
 using Spry.Identity.Models;
+using Spry.Identity.SeedWork;
 using Spry.Identity.Services;
 using Spry.Identity.Utility;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
 
 namespace Spry.Identity.Pages.Account
 {
@@ -40,6 +45,13 @@ namespace Spry.Identity.Pages.Account
         }
         #endregion
 
+        public CountryDto country = new()
+        {
+            Code = "Gh",
+            Flag = "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1ed.svg",
+            Country = "Ghana",
+        };
+
         [BindProperty]
         public InputModel Input { get; set; }
 
@@ -59,6 +71,8 @@ namespace Spry.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                return LocalRedirect(ReturnUrl);
+
                 var user = new User
                 {
                     FirstName = Input.FirstName,
@@ -135,7 +149,9 @@ namespace Spry.Identity.Pages.Account
             [Display(Name = "Last name")]
             public string LastName { get; set; }
 
-            //[Required]
+            [Required]
+            [RegularExpression("^\\+?[0-9][0-9]{7,14}$", ErrorMessage = "Invalid number")]
+            [ValidatePhone]
             [Display(Name = "Phone")]
             public string PhoneNumber { get; set; }
 
@@ -149,7 +165,20 @@ namespace Spry.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-        }
 
+
+            public static string GetNormalizedPhoneNumber(string phoneNumber, string countryCode)
+            {
+                try
+                {
+                    var util = PhoneNumberUtil.GetInstance();
+                    return util.Format(util.Parse(phoneNumber, countryCode), PhoneNumberFormat.E164);
+                }
+                catch (Exception)
+                {
+                    throw new Exception("Invalid phone number");
+                }
+            }
+        }
     }
 }

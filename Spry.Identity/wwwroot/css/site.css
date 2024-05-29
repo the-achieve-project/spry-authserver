@@ -21,6 +21,38 @@ body {
     background: url("/images/gm-mobile.png") #fff repeat;
 }
 
+.country img {
+    height: 27px;
+}
+
+.country > p:first-child {
+    margin-top: 15px;
+}
+
+.country > p {
+    margin-top: 17px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.country {
+    width: 80px;
+    height: 58px;
+    border-radius: 10px 0 0 10px;
+    border: 2px solid #FFF !important;
+    background: #F5F5F5 !important;
+}
+
+.phone {
+    width: 80%;
+}
+
+.phone_input {
+    border-radius: 0 10px 10px 0;
+    border: 2px solid #FFF !important;
+    background: #F5F5F5 !important;
+}
+
 a {
     color: #23B78D;
     font-weight: 600;
@@ -190,12 +222,12 @@ label .form-info-p {
 
 
 @media only screen and (max-width: 575.98px) {
-/*    html{
+    /*    html{
         overflow: hidden;
         overflow-y: hidden;
     }*/
 
-    main{
+    main {
         margin-top: 5%;
     }
 
@@ -203,16 +235,16 @@ label .form-info-p {
         background: none;
     }
 
-    body > div{
-        width: 100%;
-        height: 100%;
-    }
+        body > div {
+            width: 100%;
+            height: 100%;
+        }
 
     .card_width {
         width: 333px;
     }
 
-    .footer{
+    .footer {
         display: none;
     }
 }

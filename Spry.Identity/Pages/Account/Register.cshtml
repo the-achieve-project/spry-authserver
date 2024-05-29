@@ -31,11 +31,18 @@
             <label asp-for="Input.LastName"></label>
             <span asp-validation-for="Input.LastName" class="text-danger"></span>
         </div>
-        @*  <div class="form-floating mb-3">
-        <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="lastName" aria-required="true" placeholder="" />
-        <label asp-for="Input.PhoneNumber">Phone</label>
-        <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
-        </div> *@
+        <div class="country_and_phone d-flex justify-content-between">
+            <div class="country d-flex justify-content-center">
+                <p><img alt="@Model.country.Code" src="@Model.country.Flag" /></p>
+                <p><span>+233</span></p>
+            </div>
+            <div class="phone form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control phone_input" autocomplete="lastName" aria-required="true" placeholder="" />
+                <label asp-for="Input.PhoneNumber">Phone</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>            
+        </div>
+
         <div class="form-floating mb-3">
             <input asp-for="Input.Password" id="txtPassword" class="form-control ach_input" autocomplete="new-password" aria-required="true" placeholder="password" />
             <label asp-for="Input.Password"></label>
