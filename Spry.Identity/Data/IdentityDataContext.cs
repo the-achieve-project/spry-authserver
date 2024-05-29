@@ -33,7 +33,7 @@ namespace Spry.Identity.Data
         }
 
 
-
+        #region
         //should i use this or revocation where properties are changed??
         protected async Task HandleAccountChangeAsync(CancellationToken cancellationToken = default)
         {
@@ -59,5 +59,6 @@ namespace Spry.Identity.Data
                 }
             }           
         }
+        #endregion
     }
 }

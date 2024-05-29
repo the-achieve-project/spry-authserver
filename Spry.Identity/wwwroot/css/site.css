@@ -98,10 +98,18 @@ main {
     width: 391px;
 }
 
-.ach__input {
+.ach_input {
     border-radius: 10px;
     border: 2px solid #FFF !important;
     background: #F5F5F5 !important;
+}
+
+#password_eye, #password_eye2 {
+    height: 17px;
+    cursor: pointer;
+    position: absolute;
+    top: 21px;
+    right: 20px;
 }
 
 .signUp_header_container {
@@ -112,7 +120,7 @@ main {
 
 
 
-.signUp__header {
+.signUp_header {
     text-align: center;
     color: #000;
     /* h4/bold */
