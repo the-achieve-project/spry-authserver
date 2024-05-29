@@ -3,7 +3,7 @@
 
 // Write your JavaScript code.
 $(function () {
-    togglePasswordVisibiltyOnHover('password_eye', 'txtPassword');
+    togglePasswordVisibiltyOnClick('password_eye', 'txtPassword');
     togglePasswordVisibiltyOnClick('password_eye2', 'txtPassword2');
 });
 
