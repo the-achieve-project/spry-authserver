@@ -71,8 +71,6 @@ namespace Spry.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                return LocalRedirect(ReturnUrl);
-
                 var user = new User
                 {
                     FirstName = Input.FirstName,
