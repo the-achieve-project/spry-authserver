@@ -244,6 +244,18 @@ label .form-info-p {
         width: 333px;
     }
 
+    .country{
+        height: 51px;
+    }
+
+        .country > p:first-child {
+            margin-top: 11px;
+        }
+
+        .country > p {
+            margin-top: 13px;
+        }
+
     .footer {
         display: none;
     }
