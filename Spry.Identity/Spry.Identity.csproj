@@ -10,10 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <_ContentIncludedByDefault Remove="seedwork\files\countries.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNet.Security.OAuth.Yahoo" Version="8.0.0" />
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Hangfire.Redis.StackExchange" Version="1.9.3" />
+    <PackageReference Include="libphonenumber-csharp" Version="8.13.37" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="8.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.5" />
