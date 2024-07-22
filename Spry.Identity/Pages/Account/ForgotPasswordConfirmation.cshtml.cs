@@ -1,10 +1,10 @@
-using Spry.Identity.Models;
-using Spry.Identity.Services;
-using Spry.Identity.Utility;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.Services;
+using Spry.AuthServer.Utility;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
-namespace Spry.Identity.Pages.Account
+namespace Spry.AuthServer.Pages.Account
 {
 #nullable disable
     [AllowAnonymous]

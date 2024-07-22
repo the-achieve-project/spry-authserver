@@ -3,7 +3,7 @@ using OpenIddict.Server;
 using System.Diagnostics.CodeAnalysis;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
-namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
+namespace Spry.AuthServer.Infrastructure.AuthRequestEventHandlers
 {
     public sealed class CustomValidatePostLogoutRedirectUri : IOpenIddictServerHandler<OpenIddictServerEvents.ValidateLogoutRequestContext>
     {

@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OpenIddict.Abstractions;
-using Spry.Identity.Services;
+using Spry.AuthServer.Services;
 
-namespace Spry.Identity.Controllers
+namespace Spry.AuthServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

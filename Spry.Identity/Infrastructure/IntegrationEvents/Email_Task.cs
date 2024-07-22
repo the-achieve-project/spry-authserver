@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Spry.BuildingBlocks.EventBus.Events;
-using Spry.Identity.Services;
+using Spry.AuthServer.Services;
 
-namespace Spry.Identity.Infrastructure.IntegrationEvents
+namespace Spry.AuthServer.Infrastructure.IntegrationEvents
 {
 #nullable disable
     public enum SmsProviderToUse

@@ -1,11 +1,11 @@
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Spry.Identity.Data;
-using Spry.Identity.Infrastructure;
-using Spry.Identity.Infrastructure.Identity;
-using Spry.Identity.SeedWork;
+using Spry.AuthServer.Data;
+using Spry.AuthServer.Infrastructure;
+using Spry.AuthServer.Infrastructure.Identity;
+using Spry.AuthServer.SeedWork;
 
-namespace Spry.Identity
+namespace Spry.AuthServer
 {
     public class Program
     {

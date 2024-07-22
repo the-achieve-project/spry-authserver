@@ -1,4 +1,4 @@
-﻿namespace Spry.Identity.SeedWork
+﻿namespace Spry.AuthServer.SeedWork
 {
     public class ServiceResultBase
     {

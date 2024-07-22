@@ -1,15 +1,15 @@
 using PhoneNumbers;
-using Spry.Identity.Application.Attributes;
-using Spry.Identity.Dtos.Common;
-using Spry.Identity.Models;
-using Spry.Identity.SeedWork;
-using Spry.Identity.Services;
-using Spry.Identity.Utility;
+using Spry.AuthServer.Application.Attributes;
+using Spry.AuthServer.Dtos.Common;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.SeedWork;
+using Spry.AuthServer.Services;
+using Spry.AuthServer.Utility;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 
-namespace Spry.Identity.Pages.Account
+namespace Spry.AuthServer.Pages.Account
 {
 #nullable disable
     public class RegisterModel : PageModel

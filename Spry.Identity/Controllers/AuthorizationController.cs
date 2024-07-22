@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using OpenIddict.Abstractions;
 using OpenIddict.Server.AspNetCore;
-using Spry.Identity.Models;
-using Spry.Identity.SeedWork;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.SeedWork;
 using System.Security.Claims;
 
-namespace Spry.Identity.Controllers
+namespace Spry.AuthServer.Controllers
 {
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AuthorizationController(IOptions<IdentityServerSettings> options, SignInManager<User> signInManager) : Controller

@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Spry.Identity.Migrations
+namespace Spry.AuthServer.Migrations
 {
     /// <inheritdoc />
     public partial class Initial_create : Migration

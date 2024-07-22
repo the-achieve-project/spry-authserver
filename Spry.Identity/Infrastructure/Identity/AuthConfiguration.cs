@@ -1,8 +1,8 @@
-﻿using Spry.Identity.Data;
-using Spry.Identity.Models;
-using Spry.Identity.SeedWork;
+﻿using Spry.AuthServer.Data;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.SeedWork;
 
-namespace Spry.Identity.Infrastructure.Identity
+namespace Spry.AuthServer.Infrastructure.Identity
 {
     public static class AuthConfiguration
     {

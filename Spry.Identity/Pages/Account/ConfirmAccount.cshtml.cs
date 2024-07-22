@@ -1,11 +1,11 @@
 using Newtonsoft.Json;
-using Spry.Identity.Models;
-using Spry.Identity.Services;
-using Spry.Identity.Utility;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.Services;
+using Spry.AuthServer.Utility;
 using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 
-namespace Spry.Identity.Pages.Account
+namespace Spry.AuthServer.Pages.Account
 {
 #nullable disable
     public class ConfirmAccountModel(IConnectionMultiplexer redis,
@@ -44,6 +44,13 @@ namespace Spry.Identity.Pages.Account
                 {
                     var user = await _userManager.FindByIdAsync(Input.UserId.ToString());
                     user.EmailConfirmed = true;
+
+                    //optimize achieveId generation
+
+
+
+
+
                     user.AchieveId = $"AI{new Hasher(user.SequenceId).Hash()}";
 
                     var updateResult = await _userManager.UpdateAsync(user);

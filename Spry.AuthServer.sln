@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spry.Identity", "Spry.Identity\Spry.Identity.csproj", "{6CCBEE07-8678-4672-8AB0-82AAFB166865}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Spry.AuthServer", "Spry.Identity\Spry.AuthServer.csproj", "{6CCBEE07-8678-4672-8AB0-82AAFB166865}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{3220953D-5BB7-4C18-909F-7468E0B17CAC}"
 EndProject

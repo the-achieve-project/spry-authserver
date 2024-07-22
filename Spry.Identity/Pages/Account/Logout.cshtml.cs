@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Spry.Identity.Models;
+using Spry.AuthServer.Models;
 
-namespace Spry.Identity.Pages.Account
+namespace Spry.AuthServer.Pages.Account
 {
     public class LogoutModel : PageModel
     {

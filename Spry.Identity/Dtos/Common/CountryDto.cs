@@ -1,4 +1,4 @@
-﻿namespace Spry.Identity.Dtos.Common
+﻿namespace Spry.AuthServer.Dtos.Common
 {
 #nullable disable
     public class CountryDto

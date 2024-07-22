@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Numerics;
 
-namespace Spry.Identity.Models
+namespace Spry.AuthServer.Models
 {
     public class User : IdentityUser<Guid>
     {

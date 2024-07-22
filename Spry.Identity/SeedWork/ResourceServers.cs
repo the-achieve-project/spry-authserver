@@ -2,7 +2,7 @@
 using System.Text.Json;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Spry.Identity.SeedWork
+namespace Spry.AuthServer.SeedWork
 {
 #nullable disable
     public static class ResourceServers

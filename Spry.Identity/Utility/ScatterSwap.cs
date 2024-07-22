@@ -1,4 +1,4 @@
-﻿namespace Spry.Identity.Utility
+﻿namespace Spry.AuthServer.Utility
 {
     public class Hasher
     {

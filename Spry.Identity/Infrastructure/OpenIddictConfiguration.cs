@@ -1,8 +1,8 @@
-﻿using Spry.Identity.Data;
+﻿using Spry.AuthServer.Data;
 using System.Security.Cryptography.X509Certificates;
-using Spry.Identity.SeedWork;
+using Spry.AuthServer.SeedWork;
 
-namespace Spry.Identity.Infrastructure
+namespace Spry.AuthServer.Infrastructure
 {
     public static class OpenIddictConfiguration
     {

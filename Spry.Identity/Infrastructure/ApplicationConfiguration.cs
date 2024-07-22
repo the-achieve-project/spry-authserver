@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Quartz;
-using Spry.Identity.Data;
-using Spry.Identity.SeedWork;
-using Spry.Identity.Services;
+using Spry.AuthServer.Data;
+using Spry.AuthServer.SeedWork;
+using Spry.AuthServer.Services;
 using StackExchange.Redis;
 
-namespace Spry.Identity.Infrastructure
+namespace Spry.AuthServer.Infrastructure
 {
     public static class ApplicationConfiguration
     {

@@ -1,6 +1,6 @@
 ﻿using OpenIddict.Abstractions;
 
-namespace Spry.Identity.SeedWork
+namespace Spry.AuthServer.SeedWork
 {
     public static class ClientGenerator
     {

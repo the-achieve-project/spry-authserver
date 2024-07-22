@@ -17,6 +17,7 @@
     <PackageReference Include="AspNet.Security.OAuth.Yahoo" Version="8.0.0" />
     <PackageReference Include="Autofac" Version="8.0.0" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="9.0.0" />
+    <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Hangfire.Redis.StackExchange" Version="1.9.3" />
     <PackageReference Include="libphonenumber-csharp" Version="8.13.37" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.5" />

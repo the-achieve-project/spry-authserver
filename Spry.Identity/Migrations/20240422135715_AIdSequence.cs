@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Spry.Identity.Migrations
+namespace Spry.AuthServer.Migrations
 {
     /// <inheritdoc />
     public partial class AIdSequence : Migration

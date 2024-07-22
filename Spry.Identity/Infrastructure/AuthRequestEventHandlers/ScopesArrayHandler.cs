@@ -1,7 +1,7 @@
 ﻿using OpenIddict.Abstractions;
 using OpenIddict.Server;
 
-namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
+namespace Spry.AuthServer.Infrastructure.AuthRequestEventHandlers
 {
     public class ScopesAsArrayHandler : IOpenIddictServerHandler<OpenIddictServerEvents.GenerateTokenContext>
     {

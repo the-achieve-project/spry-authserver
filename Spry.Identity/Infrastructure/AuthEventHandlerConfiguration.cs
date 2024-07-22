@@ -1,9 +1,9 @@
-﻿using Spry.Identity.Infrastructure.AuthRequestEventHandlers;
+﻿using Spry.AuthServer.Infrastructure.AuthRequestEventHandlers;
 using static OpenIddict.Server.OpenIddictServerEvents;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 using static OpenIddict.Server.OpenIddictServerHandlers.Session;
 
-namespace Spry.Identity.Infrastructure
+namespace Spry.AuthServer.Infrastructure
 {
     public static class AuthEventHandlerConfiguration
     {

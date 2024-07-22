@@ -1,10 +1,10 @@
-using Spry.Identity.Models;
-using Spry.Identity.Utility;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.Utility;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text.Json;
 
-namespace Spry.Identity.Pages.Account
+namespace Spry.AuthServer.Pages.Account
 {
 #nullable disable
     [AllowAnonymous]

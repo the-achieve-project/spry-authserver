@@ -1,7 +1,7 @@
-﻿using Spry.Identity.Data;
-using Spry.Identity.SeedWork;
+﻿using Spry.AuthServer.Data;
+using Spry.AuthServer.SeedWork;
 
-namespace Spry.Identity.Workers
+namespace Spry.AuthServer.Workers
 {
     public class Seeder(IServiceProvider serviceProvider) : IHostedService
     {

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 #nullable disable
 
-namespace Spry.Identity.Utility
+namespace Spry.AuthServer.Utility
 {
     /// <summary>
     ///     This class can generate random strings and supports following settings:

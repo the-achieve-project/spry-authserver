@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Spry.Identity.Pages.Migration
+namespace Spry.AuthServer.Pages.Migration
 {
     public class PasswordModel : PageModel
     {

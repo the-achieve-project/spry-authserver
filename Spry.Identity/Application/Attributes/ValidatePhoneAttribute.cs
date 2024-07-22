@@ -1,8 +1,8 @@
 ﻿using PhoneNumbers;
-using Spry.Identity.Pages.Account;
+using Spry.AuthServer.Pages.Account;
 using System.ComponentModel.DataAnnotations;
 
-namespace Spry.Identity.Application.Attributes
+namespace Spry.AuthServer.Application.Attributes
 {
 #nullable disable
     public class ValidatePhoneAttribute : ValidationAttribute

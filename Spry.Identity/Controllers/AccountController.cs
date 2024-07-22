@@ -1,7 +1,7 @@
-﻿using Spry.Identity.Dtos.Account;
-using Spry.Identity.Services;
+﻿using Spry.AuthServer.Dtos.Account;
+using Spry.AuthServer.Services;
 
-namespace Spry.Identity.Controllers
+namespace Spry.AuthServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

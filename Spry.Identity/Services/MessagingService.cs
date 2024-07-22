@@ -1,8 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Spry.BuildingBlocks.EventBus.Abstractions;
-using Spry.Identity.Infrastructure.IntegrationEvents;
+using Spry.AuthServer.Infrastructure.IntegrationEvents;
 
-namespace Spry.Identity.Services
+namespace Spry.AuthServer.Services
 {
 #nullable disable
     public class MessagingService(IEventBus eventBus,

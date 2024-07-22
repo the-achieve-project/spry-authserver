@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Spry.Identity.Dtos.Account
+namespace Spry.AuthServer.Dtos.Account
 {
 #nullable disable
     public class RegisterRequest

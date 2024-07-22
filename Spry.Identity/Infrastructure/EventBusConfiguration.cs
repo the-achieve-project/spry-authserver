@@ -2,10 +2,10 @@
 using Spry.BuildingBlocks.EventBus.Abstractions;
 using Spry.BuildingBlocks.EventBus;
 using Spry.BuildingBlocks.EventBusRabbitMQ;
-using Spry.Identity.SeedWork;
+using Spry.AuthServer.SeedWork;
 using RabbitMQ.Client;
 
-namespace Spry.Identity.Infrastructure
+namespace Spry.AuthServer.Infrastructure
 {
     public static class EventBusConfiguration
     {

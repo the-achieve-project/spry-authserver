@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Spry.Identity.Models;
+using Spry.AuthServer.Models;
 
-namespace Spry.Identity.Data
+namespace Spry.AuthServer.Data
 {
     public class UserConfiguration : IEntityTypeConfiguration<User>
     {

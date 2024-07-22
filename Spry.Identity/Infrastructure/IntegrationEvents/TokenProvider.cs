@@ -1,6 +1,6 @@
-﻿using Spry.Identity.Models;
+﻿using Spry.AuthServer.Models;
 
-namespace Spry.Identity.Infrastructure.IntegrationEvents
+namespace Spry.AuthServer.Infrastructure.IntegrationEvents
 {
     public class TokenProvider : IUserTwoFactorTokenProvider<User>
     {

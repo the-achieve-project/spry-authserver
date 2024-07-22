@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Spry.Identity.Migrations
+namespace Spry.AuthServer.Migrations
 {
     /// <inheritdoc />
     public partial class UserDeviceLogins : Migration

@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
-using Spry.Identity.Models;
+using Spry.AuthServer.Models;
 
 
-namespace Spry.Identity.Data
+namespace Spry.AuthServer.Data
 {
     public class IdentityDataContext(DbContextOptions<IdentityDataContext> options, IServiceProvider serviceProvider) : IdentityDbContext<User, UserRole, Guid>(options)
     {

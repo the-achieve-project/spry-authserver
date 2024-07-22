@@ -1,4 +1,4 @@
-namespace Spry.Identity.Models
+namespace Spry.AuthServer.Models
 {
     public class ErrorViewModel
     {

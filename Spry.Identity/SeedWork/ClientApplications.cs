@@ -1,9 +1,9 @@
 ﻿using OpenIddict.Abstractions;
-using Spry.Identity.Utility;
+using Spry.AuthServer.Utility;
 using System.Text.Json;
 using static OpenIddict.Abstractions.OpenIddictConstants;
 
-namespace Spry.Identity.SeedWork
+namespace Spry.AuthServer.SeedWork
 {
     public static class ClientApplications
     {

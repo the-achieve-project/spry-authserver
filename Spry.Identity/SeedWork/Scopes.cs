@@ -1,7 +1,7 @@
 ﻿using OpenIddict.Abstractions;
 using System.Text.Json;
 
-namespace Spry.Identity.SeedWork
+namespace Spry.AuthServer.SeedWork
 {
 #nullable disable
     public static class Scopes

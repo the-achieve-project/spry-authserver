@@ -1,7 +1,7 @@
 ﻿using OpenIddict.Abstractions;
-using Spry.Identity.Models;
+using Spry.AuthServer.Models;
 
-namespace Spry.Identity.Utility
+namespace Spry.AuthServer.Utility
 {
     public static class OiddictExtensions
     {

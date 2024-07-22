@@ -1,9 +1,9 @@
 ﻿using OpenIddict.Abstractions;
 using OpenIddict.Server;
-using Spry.Identity.SeedWork;
+using Spry.AuthServer.SeedWork;
 using static OpenIddict.Server.OpenIddictServerHandlers.Authentication;
 
-namespace Spry.Identity.Infrastructure.AuthRequestEventHandlers
+namespace Spry.AuthServer.Infrastructure.AuthRequestEventHandlers
 {
     public sealed class CustomValidateClientRedirectUri : IOpenIddictServerHandler<OpenIddictServerEvents.ValidateAuthorizationRequestContext>
     {

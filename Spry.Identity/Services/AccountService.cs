@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Spry.Identity.Dtos.Account;
-using Spry.Identity.Models;
-using Spry.Identity.SeedWork;
+using Spry.AuthServer.Dtos.Account;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.SeedWork;
 
-namespace Spry.Identity.Services
+namespace Spry.AuthServer.Services
 {
     public class AccountService
     {

@@ -1,13 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using Spry.Identity.Data;
-using Spry.Identity.Models;
-using Spry.Identity.Services;
+using Spry.AuthServer.Data;
+using Spry.AuthServer.Models;
+using Spry.AuthServer.Services;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 using System.Web;
 using UAParser;
 
-namespace Spry.Identity.Pages.Account
+namespace Spry.AuthServer.Pages.Account
 {
 #nullable disable
     public class LoginModel(SignInManager<User> signInManager,

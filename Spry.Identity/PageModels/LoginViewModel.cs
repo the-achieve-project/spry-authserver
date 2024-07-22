@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Spry.Identity.ViewModels
+namespace Spry.AuthServer.ViewModels
 {
     public class LoginViewModel
     {
