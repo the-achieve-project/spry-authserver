@@ -1,0 +1,70 @@
+﻿@page
+@using Spry.AuthServer.Pages.Account
+
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+
+<div class="card card_layout card_width mb-5">
+    <img class="mx-auto" alt="achieve logo" src="~/images/achieve-logo-white.svg" />
+    <div class="signUp_header_container mb-4">
+        @* <h4 class="signUp_header">Register</h4>
+        <p class="form-info-p"> Create a new  account </p> *@
+    </div>
+    <form class="signUp w-100" id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Email" class="form-control ach_input" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+            <label asp-for="Input.Email"></label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Input.FirstName" class="form-control ach_input" autocomplete="firstName" aria-required="true" placeholder="" />
+            <label asp-for="Input.FirstName"></label>
+            <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.LastName" class="form-control ach_input" autocomplete="lastName" aria-required="true" placeholder="" />
+            <label asp-for="Input.LastName"></label>
+            <span asp-validation-for="Input.LastName" class="text-danger"></span>
+        </div>
+        <div class="country_and_phone d-flex justify-content-between">
+            <div class="country d-flex justify-content-center">
+                <p><img alt="@Model.country.Code" src="@Model.country.Flag" /></p>
+                <p><span>+233</span></p>
+            </div>
+            <div class="phone form-floating mb-3">
+                <input asp-for="Input.PhoneNumber" class="form-control phone_input" autocomplete="lastName" aria-required="true" placeholder="" />
+                <label asp-for="Input.PhoneNumber">Phone</label>
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>            
+        </div>
+
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Password" id="txtPassword" class="form-control ach_input" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <label asp-for="Input.Password"></label>
+            <img id="password_eye" class="show" alt="show/hide" src="~/images/eye-svgrepo-com.svg" />
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.ConfirmPassword" id="txtPassword2" class="form-control ach_input" autocomplete="new-password" aria-required="true" placeholder="password" />
+            <label asp-for="Input.ConfirmPassword"></label>
+            <img id="password_eye2" class="show" alt="show/hide" src="~/images/eye-svgrepo-com.svg" />
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+        </div>
+        <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+    </form>
+</div>
+<div>
+    <p>
+        Already on achieve?
+        <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Sign in</a>
+    </p>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
