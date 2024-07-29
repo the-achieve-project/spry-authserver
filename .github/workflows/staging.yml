@@ -19,7 +19,7 @@ jobs:
           DOCKER_HUB_USERNAME: ${{ vars.LIVE_DOCKER_HUB_USERNAME }}
           DOCKER_HUB_PASSWORD: ${{ vars.LIVE_DOCKER_HUB_PASSWORD }}
         run: |
-          docker build -t $IMAGE_NAME .
+          docker build -f ./Spry.AuthServer/Dockerfile -t $IMAGE_NAME .
           echo ${{ vars.DOCKER_HUB_PASSWORD }} | docker login --username ${{ vars.DOCKER_HUB_USERNAME }} --password-stdin
           docker push $IMAGE_NAME
 

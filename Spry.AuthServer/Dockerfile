@@ -9,15 +9,15 @@ EXPOSE 8080
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Spry.Identity/Spry.Identity.csproj", "Spry.Identity/"]
-RUN dotnet restore "./Spry.Identity/Spry.Identity.csproj"
+COPY ["Spry.AuthServer/Spry.AuthServer.csproj", "Spry.AuthServer/"]
+RUN dotnet restore --source https://api.nuget.org/v3/index.json "Spry.AuthServer/Spry.AuthServer.csproj"
 COPY . .
-WORKDIR "/src/Spry.Identity"
-RUN dotnet build "./Spry.Identity.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/Spry.AuthServer"
+RUN dotnet build "./Spry.AuthServer.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Spry.Identity.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./Spry.AuthServer.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
