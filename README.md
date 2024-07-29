@@ -16,6 +16,8 @@ For first time access, Setup access to the database with connection details
 - username: postgres
 - password: spry-password
 
+To run the project use **dotnet run**. To build project use ****
+
 ## Framework 
 Asp.NetCore Razor pages and Api
 .Net8
