@@ -1,0 +1,39 @@
+name: Build and Deploy to Staging
+
+on:
+  push:
+    branches:
+      - staging-master
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push Docker image
+        env:
+          IMAGE_NAME: ${{ vars.LIVE_DOCKER_REGISTRY }}/authserver-dev
+          DOCKER_HUB_USERNAME: ${{ vars.LIVE_DOCKER_HUB_USERNAME }}
+          DOCKER_HUB_PASSWORD: ${{ vars.LIVE_DOCKER_HUB_PASSWORD }}
+        run: |
+          docker build -t $IMAGE_NAME .
+          echo ${{ vars.DOCKER_HUB_PASSWORD }} | docker login --username ${{ vars.DOCKER_HUB_USERNAME }} --password-stdin
+          docker push $IMAGE_NAME
+
+      - name: Deploy to Kubernetes Staging
+        env:
+          DO_ACCESS_TOKEN: ${{ secrets.DO_ACCESS_TOKEN }}
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl bash
+          curl -L https://github.com/digitalocean/doctl/releases/download/v${{ vars.DOCTL_VERSION }}/doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz -o /usr/local/bin/doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz
+          tar -xzvf /usr/local/bin/doctl-${{ vars.DOCTL_VERSION }}-linux-amd64.tar.gz -C /usr/local/bin
+          mkdir /lib64 && ln -s /lib/libc.musl-x86_64.so.1 /lib64/ld-linux-x86-64.so.2
+          chmod +rwx /usr/local/bin/doctl
+          doctl auth init --access-token ${{ secrets.DO_ACCESS_TOKEN }}
+
+          doctl kubernetes cluster kubeconfig save everwage-staging
+          kubectl rollout restart statefulset/authserver -n everwage
