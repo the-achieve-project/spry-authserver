@@ -16,11 +16,17 @@ For first time access, Setup access to the database with connection details
 - username: postgres
 - password: spry-password
 
-To run the project use **dotnet run**. To build project use ****
+To run the project without compose, navigate to **Spry.AuthServer** in the root folder of project, use **dotnet run** and **dotnet build**
+ to run and build the project respectively.
+
+ Dependencies
+ - RabbitMq
+ - Redis
+ - Postgres
 
 ## Framework 
-Asp.NetCore Razor pages and Api
-.Net8
+- Asp.NetCore Razor pages and Api
+- Dotnet SDK version - v8
 
 ## Useful resources
 [OpenId connect specification](https://openid.net/specs/openid-connect-core-1_0.html)
