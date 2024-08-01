@@ -22,4 +22,4 @@ RUN dotnet publish "./Spry.AuthServer.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Spry.Identity.dll"]
+ENTRYPOINT ["dotnet", "Spry.AuthServer.dll"]
