@@ -19,23 +19,23 @@ namespace Spry.AuthServer.Infrastructure
 
                 var factory = new ConnectionFactory()
                 {
-                    HostName = busSettings.Connection
+                    HostName = configuration["EventBusConnection"]
                 };
 
                 if (!string.IsNullOrEmpty(busSettings.UserName))
                 {
-                    factory.UserName = busSettings.UserName;
+                    factory.UserName = configuration["EventBusUserName"];
                 }
 
                 if (!string.IsNullOrEmpty(busSettings.Password))
                 {
-                    factory.Password = busSettings.Password;
+                    factory.Password = configuration["EventBusPassword"];
                 }
 
                 var retryCount = 50000;
                 if (!string.IsNullOrEmpty(busSettings.RetryCount))
                 {
-                    retryCount = int.Parse(busSettings.RetryCount);
+                    retryCount = int.Parse(configuration["EventBusRetryCount"]!);
                 }
 
                 return new DefaultRabbitMQPersistentConnection(factory, logger, retryCount);
