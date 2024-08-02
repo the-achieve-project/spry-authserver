@@ -22,7 +22,7 @@ namespace Spry.AuthServer
 
             builder.Services.AddDbContext<IdentityDataContext>(options =>
             {
-                options.UseNpgsql(builder.Configuration.GetConnectionString("SprySSOIdentity"),
+                options.UseNpgsql(builder.Configuration.GetConnectionString("SpryAuthDb"),
                         npgsqlOptionsAction: sqlOptions =>
                         {
                             //Configuring Connection Resiliency: https://docs.microsoft.com/en-us/ef/core/miscellaneous/connection-resiliency 
