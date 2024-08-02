@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   spry.identity:
-    image: ${DOCKER_REGISTRY-}spryidentity
+    image: everwage/authserver-dev
     build:
       context: .
       dockerfile: Spry.AuthServer/Dockerfile
@@ -12,7 +12,7 @@ services:
      - DisablePostLogoutRedirectUriValidation=true
      - EventBus__Connection=rabbitmq
      - ASPNETCORE_ENVIRONMENT=Development
-     - ConnectionStrings__SprySSOIdentity=Server=postgres.data;Port=5432;User Id=postgres;Password=spry-password;Database=spry_sso_identity;Pooling=true;MaxPoolSize=50;
+     - ConnectionStrings__SprySSOIdentity=Server=postgres.data;Port=5432;User Id=postgres;Password=spry-password;Database=spry_auth_db;Pooling=true;MaxPoolSize=50;
      - ConnectionStrings__SpryRedisStore=redis.data,abortConnect=false
     networks: 
       spryid:
