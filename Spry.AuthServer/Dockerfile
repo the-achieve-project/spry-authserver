@@ -22,4 +22,5 @@ RUN dotnet publish "./Spry.AuthServer.csproj" -c $BUILD_CONFIGURATION -o /app/pu
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+ENV ASPNETCORE_HTTP_PORTS= 
 ENTRYPOINT ["dotnet", "Spry.AuthServer.dll"]
