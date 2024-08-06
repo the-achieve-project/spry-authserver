@@ -105,6 +105,11 @@ namespace Spry.AuthServer.Pages.Account
 
                         _messagingService.SendOtp(user.Email, user.FirstName, code);
 
+                        if (!string.IsNullOrEmpty(user.PhoneNumber))
+                        {
+                            _messagingService.SendSMS2faNotice(user.PhoneNumber, code);
+                        }
+
                         return RedirectToPage("./ConfirmAccount", new { ReturnUrl = returnUrl, user.Id });
                     }
                     else

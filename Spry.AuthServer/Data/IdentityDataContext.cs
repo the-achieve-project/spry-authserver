@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OpenIddict.Abstractions;
 using Spry.AuthServer.Models;
+using Spry.AuthServer.Utility;
 
 
 namespace Spry.AuthServer.Data
@@ -16,9 +17,16 @@ namespace Spry.AuthServer.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+            if (AppVariables.CurrentEnvironment == AppVariables.Development)
             {
-                builder.HasSequence<long>(AIdSqlSequenceName);
+                builder.HasSequence<long>(AIdSqlSequenceName)
+                       .StartsAt(1570);
+            }
+            
+            if (AppVariables.CurrentEnvironment == AppVariables.Production)
+            {
+                builder.HasSequence<long>(AIdSqlSequenceName)
+                       .StartsAt(1570);
             }
 
             builder.ApplyConfiguration(new UserConfiguration());

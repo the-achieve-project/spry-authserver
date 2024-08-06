@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Spry.AuthServer.Data;
 using Spry.AuthServer.Infrastructure;
 using Spry.AuthServer.Infrastructure.Identity;
-using Spry.AuthServer.SeedWork;
 
 namespace Spry.AuthServer
 {
