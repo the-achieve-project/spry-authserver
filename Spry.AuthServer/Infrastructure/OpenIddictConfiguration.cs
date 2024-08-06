@@ -26,7 +26,7 @@ namespace Spry.AuthServer.Infrastructure
                   })
                   .AddServer(options =>
                   {
-                      options.SetIssuer(serverSettings.Issuer);
+                      //options.SetIssuer(serverSettings.Issuer);
                       options.ServerEventHandlers(builder.Configuration);
 
                       options.AllowClientCredentialsFlow()

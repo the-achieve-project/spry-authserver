@@ -1,11 +1,8 @@
 version: '3.4'
 
 services:
-  spry.identity:
+  spry.authserver:
     image: everwage/authserver-dev
-    build:
-      context: .
-      dockerfile: Spry.AuthServer/Dockerfile
     environment:
      - IdentityServer__Issuer=http://host.docker.internal:5312
      - DisableRedirectUriValidation=true
