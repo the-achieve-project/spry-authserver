@@ -1,4 +1,5 @@
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Spry.AuthServer.Data;
 using Spry.AuthServer.Infrastructure;
@@ -38,6 +39,14 @@ namespace Spry.AuthServer
             builder.Services.AddEventBusConfiguration(builder.Configuration);
 
             var app = builder.Build();
+
+            var forwardedHeaderOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            };
+            forwardedHeaderOptions.KnownNetworks.Clear();
+            forwardedHeaderOptions.KnownProxies.Clear();
+            app.UseForwardedHeaders(forwardedHeaderOptions);
 
             app.UseMigrations();
 
