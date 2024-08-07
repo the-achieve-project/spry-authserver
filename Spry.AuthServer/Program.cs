@@ -1,8 +1,11 @@
 using Autofac.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Spry.AuthServer.Data;
 using Spry.AuthServer.Infrastructure;
 using Spry.AuthServer.Infrastructure.Identity;
+using Spry.AuthServer.SeedWork;
+using System.Configuration;
 
 namespace Spry.AuthServer
 {
@@ -38,6 +41,17 @@ namespace Spry.AuthServer
 
             var app = builder.Build();
 
+            if (builder.Configuration.GetValue<bool>("UseForwardedHeaders"))
+            {
+                var forwardedHeaderOptions = new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                };
+                forwardedHeaderOptions.KnownNetworks.Clear();
+                forwardedHeaderOptions.KnownProxies.Clear();
+                app.UseForwardedHeaders(forwardedHeaderOptions);
+            }            
+
             app.UseMigrations();
 
             // Configure the HTTP request pipeline.
@@ -48,7 +62,8 @@ namespace Spry.AuthServer
                 app.UseHsts();
             }
 
-            //app.UseHttpsRedirection();
+
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();

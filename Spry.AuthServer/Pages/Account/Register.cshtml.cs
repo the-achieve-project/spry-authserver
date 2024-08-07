@@ -48,7 +48,7 @@ namespace Spry.AuthServer.Pages.Account
         public CountryDto country = new()
         {
             Code = "Gh",
-            Flag = "https://twemoji.maxcdn.com/2/svg/1f1ec-1f1ed.svg",
+            Flag = "https://upload.wikimedia.org/wikipedia/commons/1/19/Flag_of_Ghana.svg",
             Country = "Ghana",
         };
 
@@ -141,6 +141,7 @@ namespace Spry.AuthServer.Pages.Account
         {
             [Required]
             [EmailAddress]
+            [MaxLength(255)]
             [Display(Name = "Email")]
             public string Email { get; set; }
 

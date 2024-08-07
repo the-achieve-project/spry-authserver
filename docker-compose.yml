@@ -5,6 +5,7 @@ services:
     image: everwage/authserver-dev
     environment:
      - IdentityServer__Issuer=http://host.docker.internal:5312
+     - UseForwardedHeaders=false
      - DisableRedirectUriValidation=true
      - DisablePostLogoutRedirectUriValidation=true
      - EventBus__Connection=rabbitmq

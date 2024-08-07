@@ -36,4 +36,4 @@ jobs:
           doctl auth init --access-token ${{ secrets.DO_ACCESS_TOKEN }}
 
           doctl kubernetes cluster kubeconfig save everwage-staging
-          kubectl rollout restart statefulset/authserver -n everwage
+          kubectl rollout restart statefulset/auth -n everwage

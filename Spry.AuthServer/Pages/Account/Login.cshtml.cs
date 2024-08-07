@@ -110,7 +110,7 @@ namespace Spry.AuthServer.Pages.Account
                 }
                 else
                 {
-                    ModelState.AddModelError(string.Empty, "invalid email.");
+                    ModelState.AddModelError(string.Empty, "invalid account.");
                 }
             }
 
