@@ -49,6 +49,7 @@ namespace Spry.AuthServer
                 app.UseHsts();
             }
 
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
