@@ -67,9 +67,9 @@ namespace Spry.AuthServer.Infrastructure
                               .EnableLogoutEndpointPassthrough()
                               .EnableUserinfoEndpointPassthrough();
 
-                      if (builder.Environment.IsDevelopment())
-                          options.UseAspNetCore()
-                                 .DisableTransportSecurityRequirement();
+                      //if (builder.Environment.IsDevelopment())
+                      //    options.UseAspNetCore()
+                      //           .DisableTransportSecurityRequirement();
                   });
 
             return services;
