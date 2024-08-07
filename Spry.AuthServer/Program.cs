@@ -5,6 +5,7 @@ using Spry.AuthServer.Data;
 using Spry.AuthServer.Infrastructure;
 using Spry.AuthServer.Infrastructure.Identity;
 using Spry.AuthServer.SeedWork;
+using System.Configuration;
 
 namespace Spry.AuthServer
 {
@@ -40,13 +41,16 @@ namespace Spry.AuthServer
 
             var app = builder.Build();
 
-            var forwardedHeaderOptions = new ForwardedHeadersOptions
+            if (builder.Configuration.GetValue<bool>("UseForwardedHeaders"))
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            };
-            forwardedHeaderOptions.KnownNetworks.Clear();
-            forwardedHeaderOptions.KnownProxies.Clear();
-            app.UseForwardedHeaders(forwardedHeaderOptions);
+                var forwardedHeaderOptions = new ForwardedHeadersOptions
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+                };
+                forwardedHeaderOptions.KnownNetworks.Clear();
+                forwardedHeaderOptions.KnownProxies.Clear();
+                app.UseForwardedHeaders(forwardedHeaderOptions);
+            }            
 
             app.UseMigrations();
 
